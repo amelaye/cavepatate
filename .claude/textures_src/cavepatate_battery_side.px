@@ -1,11 +1,11 @@
 # cavepatate_battery_side — généré par _generate.py (original, CC BY-SA 3.0)
 . = transparent
-a = #4a3120
-b = #6b4a2e
-c = #8a6340
-d = #a67c50
-e = #c88a4a
-f = #e8b070
+a = #6a3e14
+b = #91591e
+c = #b4762a
+d = #cf963c
+e = #e6b65a
+f = #f8d686
 
 bbbbbbbbbbbbbbbb
 bbbbbbbbbbbbbbbb

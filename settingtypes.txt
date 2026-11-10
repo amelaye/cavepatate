@@ -23,4 +23,8 @@ cavepatate_cavity_features (Potato cave features per chunk) int 20 0 100
 
 # Light level of the invisible light filling potato caves evenly (14 = brightest).
 # 0 leaves the caves lit only by their glowing sprouts, fruits and blighted blocks.
-cavepatate_cavity_light (Potato cave light) int 13 0 14
+cavepatate_cavity_light (Potato cave light) int 14 0 14
+
+# Inside a potato cave, players see a light golden haze in the distance and slightly more vivid colours
+# (fog colour and saturation, restored when they leave). Saturation needs shaders on the client.
+cavepatate_cavity_ambience (Golden ambience in potato caves) bool true

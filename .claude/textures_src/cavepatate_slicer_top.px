@@ -2,9 +2,9 @@
 . = transparent
 a = #4a4a52
 b = #8a8a94
-c = #d0d4dc
-d = #a89f88
-e = #bfb7a0
+c = #dce0e8
+d = #d6b978
+e = #e4cc8e
 
 dddddddddddddddd
 deeeeeeeeeeeeeed

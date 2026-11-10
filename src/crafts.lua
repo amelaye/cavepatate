@@ -53,8 +53,6 @@ craft({ output = name("potato_block"), recipe = {
 	{ POTATO, POTATO, POTATO }, { POTATO, POTATO, POTATO }, { POTATO, POTATO, POTATO } } })
 craft({ output = POTATO .. " 9", recipe = { { name("potato_block") } } })
 craft({ output = name("potato_flesh"), recipe = { { POTATO, POTATO }, { POTATO, POTATO } } })
-craft({ output = name("starch_cloud") .. " 4", recipe = {
-	{ name("potato_flesh"), name("potato_flesh") }, { name("potato_flesh"), name("potato_flesh") } } })
 craft({ type = "shapeless", output = name("glow_sprout") .. " 2", recipe = { POTATO, name("toxic_sap") } })
 craft({ type = "shapeless", output = name("mighty_potato"), recipe = { name("potato_block"), name("toxic_sap") } })
 
@@ -84,7 +82,7 @@ craft({ type = "shapeless", output = name("blighted_mash") .. " 2", recipe = { B
 craft({ type = "shapeless", output = name("blighted_head"),
 	recipe = { name("blighted_potato_block"), name("toxic_sap"), name("toxic_sap") } })
 craft({ type = "shapeless", output = name("floatater"),
-	recipe = { name("starch_cloud"), name("starch_cloud"), name("potato_block"), name("toxic_sap") } })
+	recipe = { name("potato_flesh"), name("potato_flesh"), name("potato_block"), name("toxic_sap") } })
 
 -- Machines et blocs fonctionnels
 craft({ output = name("fryer"), recipe = {

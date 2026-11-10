@@ -1,12 +1,12 @@
 # cavepatate_tuber_leaves — généré par _generate.py (original, CC BY-SA 3.0)
 . = transparent
-a = #1f3d16
-b = #2e5a1f
-c = #3f7429
-d = #548f35
-e = #72ad47
-f = #ead6f2
-g = #f0d040
+a = #1e5414
+b = #2c761c
+c = #3e9826
+d = #58b832
+e = #84d448
+f = #f6dcff
+g = #ffe040
 
 aaabccbbcccddddb
 aa.bc.bbcccdd.cb

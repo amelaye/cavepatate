@@ -1,11 +1,11 @@
 # cavepatate_battery_top_on — généré par _generate.py (original, CC BY-SA 3.0)
 . = transparent
-a = #4a3120
-b = #8a6340
-c = #a67c50
+a = #6a3e14
+b = #b4762a
+c = #cf963c
 d = #5a5a62
-e = #c88a4a
-f = #d0d4dc
+e = #e6b65a
+f = #d8dce4
 g = #fff070
 h = #ffffff
 

@@ -1,42 +1,19 @@
--- /cavepatate : trouver la cave patate la plus proche (et s'y rendre).
+-- /patate : coordonnées de la cave patate la plus proche (comme /candycave de Friandises).
 
 local S = cavepatate.S
-local cave = cavepatate.cave
 
-local function safe_spot(cav)
-	-- un point au sec, hors pilier, près du centre
-	for i = 0, 12 do
-		local x, z = cav.x + i * 6, cav.z + (i % 2) * 6
-		local f = cave.floor_at(cav, x, z)
-		if f > cav.water_level and not cave.pillar_at(x, z) then
-			return { x = x, y = f + 2, z = z }
-		end
-	end
-	return { x = cav.x, y = cav.water_level + 2, z = cav.z }
-end
-
-core.register_chatcommand("cavepatate", {
-	params = "[goto]",
-	description = S("Show the nearest potato cave (\"goto\": teleport to it)"),
+core.register_chatcommand("patate", {
+	description = S("Show the nearest potato cave"),
 	privs = { teleport = true },
-	func = function(name, param)
+	func = function(name)
 		local player = core.get_player_by_name(name)
 		if not player then
-			return false, S("You must be in game.")
+			return false, S("You must be in game to use this command.")
 		end
-		local pos = player:get_pos()
-		local cav, dist = cave.find_nearest(pos, 3)
+		local cav = cavepatate.cave.find_nearest(player:get_pos(), 6)
 		if not cav then
-			return false, S("No potato cave nearby.")
+			return false, S("No potato cave found nearby.")
 		end
-		local spot = safe_spot(cav)
-		if param == "goto" then
-			player:set_pos(spot)
-			return true, S("Teleported to the potato cave at @1.", core.pos_to_string(spot))
-		end
-		if cave.norm_dist(cav, pos) < 1 then
-			return true, S("You are inside the potato cave centered at @1.", core.pos_to_string(cav))
-		end
-		return true, S("Nearest potato cave: @1 (@2 nodes away).", core.pos_to_string(spot), math.floor(dist))
+		return true, S("Nearest potato cave: @1", core.pos_to_string(vector.new(cav.x, cav.y, cav.z)))
 	end,
 })

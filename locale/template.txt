@@ -30,15 +30,12 @@ Corrupted Peel Block=
 Baked Potato Bricks=
 Charred Potato Bricks=
 Stale Potato Bricks=
-Starch Cloud=
 
 ### src/commands.lua ###
-Show the nearest potato cave ("goto": teleport to it)=
-You must be in game.=
-No potato cave nearby.=
-Teleported to the potato cave at @1.=
-You are inside the potato cave centered at @1.=
-Nearest potato cave: @1 (@2 nodes away).=
+Show the nearest potato cave=
+You must be in game to use this command.=
+No potato cave found nearby.=
+Nearest potato cave: @1=
 
 ### src/items.lua ###
 Blighted Potato=

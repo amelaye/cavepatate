@@ -35,7 +35,7 @@ Code 0 = OK, 1 = problème, 2 = impossible de lancer Luanti. Le chemin du log co
 
 ## 3. Ce que ces tests ne couvrent pas
 
-- La **génération de terrain** : aucun chunk n'est généré en headless sans joueur. Elle se teste dans le monde de dev (skill `luanti-play`, commande `/cavepatate goto`, toujours dans un **nouveau** monde après une modification du générateur), puis en lisant `~/Library/Application Support/minetest/debug.txt`.
+- La **génération de terrain** : aucun chunk n'est généré en headless sans joueur. Elle se teste dans le monde de dev (skill `luanti-play`, commandes `/patate` puis `/teleport`, toujours dans un **nouveau** monde après une modification du générateur), puis en lisant `~/Library/Application Support/minetest/debug.txt`.
 - Le rendu des textures et les formspecs : vérification visuelle en jeu.
 
 ## 4. Diagnostiquer

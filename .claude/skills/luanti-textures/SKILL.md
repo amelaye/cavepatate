@@ -36,14 +36,17 @@ Les commentaires `#` ne doivent pas contenir ` = `.
 
 - **Originalité obligatoire** : aucune texture copiée ou décalquée de Minecraft ni d'un autre jeu. On peut partir d'une palette MTG (licence CC BY-SA 3.0) mais le dessin est le nôtre.
 - 16×16, sans anti-aliasing, 4 à 8 couleurs par texture, ombrage du haut-gauche vers le bas-droit comme dans MTG.
-- Lisible à distance : un motif principal fort plus 2 ou 3 détails. Pas de bruit aléatoire pixel par pixel.
+- Blocs de terrain (roches, sols, tourbes, purée) : **grain fin à faible contraste**, à la manière de MTG (helper `natural()` de `_generate.py`), sans motif isolé reconnaissable (coulures, « yeux » contrastés, glyphes, points colorés) : répété tous les 16 nœuds, il fait ressortir la grille et paraît artificiel (rejeté par l'utilisateur). Vérifier en mosaïque 6×6. Les motifs marqués sont réservés aux blocs posés à la main (briques, machines, objets).
 - Les blocs pleins doivent **raccorder** sur les 4 bords (vérifier en mosaïque).
-- Palette du thème (à affiner dans la spec) :
-  - roche-patate : ocres et beiges terreux (`#5e4a2e` … `#b39a6b`), petits « yeux » de patate plus sombres
-  - chair de patate / pelée : crème et jaune pâle (`#d9c58f` … `#f2e4b5`)
-  - pelures : bruns (`#6b4a2a` … `#9c7344`)
-  - empoisonné / corrompu : verts maladifs et olive (`#4f6b2a` … `#a3c14a`), touches violacées discrètes
-  - racines et tiges : bruns rougeâtres et verts sombres
+- Palette du thème : **vive, chaude et saturée**, dans l'esprit de l'update (l'utilisateur a rejeté des textures
+  ternes et grisâtres). Pas de gris ni de beige délavé pour les blocs de la cave. Palettes de référence dans
+  `.claude/textures_src/_generate.py` :
+  - roche-tubercule : ocres dorés (`#6e4c1c` … `#e8c76c`), petits « yeux » de patate plus sombres
+  - roche d'amidon / chair de patate : crème et jaune (`#c4a464` … `#fff6d2`)
+  - pelures, tourbe, briques cuites : orangés et dorés (`#8a5418` … `#fde29a`)
+  - empoisonné / flétri : verts vénéneux saturés (`#264a12` … `#b6ea58`), touches violettes franches (`#7a2a8c`)
+  - corrompu : violets profonds et étincelles roses (`#26103a` … `#ff6cff`)
+  - bois et feuilles : vert-jaune et vert vif (`#3c4a12` … `#b4d04c`, `#1e5414` … `#84d448`)
 - Plantes et cristaux (`plantlike`) : fond transparent, silhouette centrée, base touchant le bas de l'image.
 
 ## Nommage et faces

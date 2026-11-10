@@ -6,15 +6,15 @@
 --     (tourbe de pelures, fleurs, potagers), Bosquet (arbres-tubercules), Flétrissure
 --     (tourbe flétrie, pointes, pelures corrompues) et Râpures (râpure de patate qui
 --     s'effondre, cactus de pelures, puits calcinés) ;
---   * les cuvettes sous le niveau d'eau sont noyées ; des piliers naturels relient
---     le sol au plafond ; des sentiers traversent Champs et Bosquet ;
+--   * les cuvettes sous le niveau d'eau sont noyées ; des sentiers traversent Champs
+--     et Bosquet ;
 --   * une coque (1 <= d < SHELL) de roche-tubercule veinée de roche d'amidon, de
 --     patate et de minerais isole la cave ; au-delà, la pierre se contamine
 --     progressivement. Les minerais de Minetest Game y deviennent des minerais de
 --     roche-tubercule ;
---   * une lumière invisible, posée en quinconce, rend la cave naturellement lumineuse.
+--   * une lumière invisible, posée en grille serrée, rend la cave naturellement lumineuse.
 
-local max, min = math.max, math.min
+local max, min, floor = math.max, math.min, math.floor
 local cave = cavepatate.cave
 local st = cavepatate.structures
 local FIELDS, GROVE, BLIGHT, HASH = cave.FIELDS, cave.GROVE, cave.BLIGHT, cave.HASH
@@ -71,7 +71,6 @@ local function init_ids()
 		tuber_leaves = n("tuber_leaves"),
 		tuber_fruit = n("tuber_fruit"),
 		tuber_pedicel = n("tuber_pedicel"),
-		starch_cloud = n("starch_cloud"),
 		pedestal = n("pedestal"),
 		cave_light = n("cave_light"),
 		loot = n("loot"),
@@ -104,7 +103,7 @@ end
 local data, p2data, warp_buf, vein_buf = {}, {}, {}, {}
 -- Emplacements de lumière d'ambiance repérés au creusement, posés après les structures
 local spots, nspots = {}, 0
-local col_floor, col_biome, col_pillar = {}, {}, {}
+local col_floor, col_biome = {}, {}
 local warp_map, vein_map, map_sx, map_sy, map_sz
 local get_noise_map = core.get_value_noise_map or core.get_perlin_map
 
@@ -161,18 +160,18 @@ local function carve(ctx, cav)
 				local ci = (z - minp.z) * sx + (x - minp.x) + 1
 				local f = cave.floor_at(cav, x, z)
 				local biome = cave.biome_at(x, z)
-				local pillar = cave.pillar_at(x, z)
-				col_floor[ci], col_biome[ci], col_pillar[ci] = f, biome, pillar
+				col_floor[ci], col_biome[ci] = f, biome
 				local mat = MATERIALS[biome]
 				local rock, surface, under = mat[1], mat[2], mat[3]
 				if mat[4] and f > wl and cave.path_at(x, z) then
 					surface = mat[4]
 				end
 				local gravel_depth = biome == HASH and 2 or 3
-				-- lumière en quinconce (comme Friandises) : colonnes x%4==0,z%4==0 et
-				-- x%4==2,z%4==2, un point à 2 nœuds au-dessus du sol puis tous les 8 nœuds
-				local phase = light and ((x % 4 == 0 and z % 4 == 0) and 2
-					or (x % 4 == 2 and z % 4 == 2) and 6) or nil
+				-- lumière invisible : une colonne sur deux en x et en z, un point à 2 nœuds
+				-- au-dessus du sol puis tous les 4 nœuds, décalé de 2 d'une colonne à l'autre
+				-- (la plupart des cases d'air sont au niveau 12 ou 13)
+				local phase = light and x % 2 == 0 and z % 2 == 0
+					and ((floor(x / 2) + floor(z / 2)) % 2 == 0 and 2 or 4) or nil
 				local ground = max(f, wl)
 				local vi = area:index(x, y0, z)
 				local ni = (z - minp.z) * sy * sx + (y0 - minp.y) * sx + (x - minp.x) + 1
@@ -200,15 +199,13 @@ local function carve(ctx, cav)
 								else
 									data[vi] = ore_map[data[vi]] or rock
 								end
-							elseif pillar then
-								data[vi] = ore_map[data[vi]] or rock
 							elseif y <= wl then
 								data[vi] = c_water
 							else
 								data[vi] = c_air
 								if phase then
 									local k = y - ground
-									if k == 2 or (k > 0 and (k - phase) % 8 == 0) then
+									if k == 2 or (k > 0 and (k - phase) % 4 == 0) then
 										nspots = nspots + 1
 										spots[nspots] = vi
 									end
@@ -293,7 +290,7 @@ end
 local function floor_y(ctx, cav, x, z, ci)
 	local f = col_floor[ci]
 	local y = f + 1
-	if f <= cav.water_level or f < ctx.minp.y or y > ctx.maxp.y or col_pillar[ci] then
+	if f <= cav.water_level or f < ctx.minp.y or y > ctx.maxp.y then
 		return nil
 	end
 	if not st.is_air(ctx, node_at(ctx, x, y, z)) then
@@ -384,7 +381,7 @@ local function decorate(ctx, cav)
 		local x, z = pr:next(x0, x1), pr:next(z0, z1)
 		local ci = ci_of(x, z)
 		local f = col_floor[ci]
-		if f and not col_pillar[ci] and ceiling_in_chunk(cav, x, z, maxp) then
+		if f and ceiling_in_chunk(cav, x, z, maxp) then
 			local from = max(minp.y, f + 2)
 			if from < maxp.y then
 				local yc = ceiling_y(ctx, x, z, from)
@@ -396,19 +393,7 @@ local function decorate(ctx, cav)
 		end
 	end
 
-	-- 4. nuages de fécule flottant à mi-hauteur
-	for _ = 1, math.ceil(cave.FEATURES / 3) do
-		local x, z = pr:next(x0, x1), pr:next(z0, z1)
-		local f = col_floor[ci_of(x, z)]
-		if f then
-			local y = f + pr:next(16, 34)
-			if y >= minp.y and y <= maxp.y then
-				st.cloud(ctx, x, y, z)
-			end
-		end
-	end
-
-	-- 5. petites décorations, colonne par colonne
+	-- 4. petites décorations, colonne par colonne
 	local area = ctx.area
 	local irx2, irz2 = 1 / (cav.rx * cav.rx), 1 / (cav.rz * cav.rz)
 	for z = z0, z1 do
@@ -416,7 +401,7 @@ local function decorate(ctx, cav)
 		for x = x0, x1 do
 			local ci = ci_of(x, z)
 			local f = col_floor[ci]
-			if f and (x - cav.x) ^ 2 * irx2 + dz2 < 1 and not col_pillar[ci] then
+			if f and (x - cav.x) ^ 2 * irx2 + dz2 < 1 then
 				local biome = col_biome[ci]
 				local y = floor_y(ctx, cav, x, z, ci)
 				if y and node_at(ctx, x, f, z) ~= c.tuber_path then

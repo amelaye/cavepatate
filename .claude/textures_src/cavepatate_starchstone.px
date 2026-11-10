@@ -1,23 +1,24 @@
 # cavepatate_starchstone — généré par _generate.py (original, CC BY-SA 3.0)
-a = #8f8670
-b = #a89f88
-c = #bfb7a0
-d = #d3ccb6
-e = #e6e0cc
+a = #e6c244
+b = #ecce56
+c = #f2d86a
+d = #f6e280
+e = #faec9a
+f = #d8b034
 
-abbbbbaaaaaabbbb
-bbbbbaaaaaaabbbb
-bbbbbaaaaaaaabbb
-cccccbaaaaaaabbc
-ddddcbaaaaaaaabc
-ddcccbbaaaaabbcd
-cccaabbaaaabcddd
-ccccbaaaaabcdddd
-ccdcbaaaaabcdedc
-dddcbbaaaabcdddd
-eddccbbaaaabbcdd
-edcbaaaaaaaaabde
-dcbaaaaaaaaaabdd
-ddcbaaaaaaaaabcd
-cdcbaaaaaabaabcc
-bccbbaaaaabaabbb
+cbccddabdbacdccb
+ccdbbbabdabdeccb
+edceaaabbceeebbc
+cccdcdcdcbedbbbf
+eebccccccbebcbbd
+bddbbceccabdccdc
+adccefcccddbddda
+bcdecdedcecddbdb
+dcababcebecdcbdd
+cbbdaecbbeccadac
+cdcedecdbdebbbcd
+aadccdddfdbdcbcb
+aacccccbbdcdcdba
+bcdbeebdbdbcdccc
+fbeddcdddadbbcca
+bdddcaabddcbccbb

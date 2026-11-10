@@ -30,15 +30,12 @@ Corrupted Peel Block=Bloc de pelures corrompues
 Baked Potato Bricks=Briques de patate cuite
 Charred Potato Bricks=Briques de patate calcinée
 Stale Potato Bricks=Briques de patate rassie
-Starch Cloud=Nuage de fécule
 
 ### src/commands.lua ###
-Show the nearest potato cave ("goto": teleport to it)=Affiche la cave à patates la plus proche (« goto » : s'y téléporter)
-You must be in game.=Vous devez être en jeu.
-No potato cave nearby.=Aucune cave à patates à proximité.
-Teleported to the potato cave at @1.=Téléporté dans la cave à patates en @1.
-You are inside the potato cave centered at @1.=Vous êtes dans la cave à patates centrée en @1.
-Nearest potato cave: @1 (@2 nodes away).=Cave à patates la plus proche : @1 (à @2 blocs).
+Show the nearest potato cave=Affiche la cave à patates la plus proche
+You must be in game to use this command.=Vous devez être en jeu pour utiliser cette commande.
+No potato cave found nearby.=Aucune cave à patates à proximité.
+Nearest potato cave: @1=Cave à patates la plus proche : @1
 
 ### src/items.lua ###
 Blighted Potato=Patate vénéneuse

@@ -794,23 +794,3 @@ function st.mighty_potato(ctx, x, y, z)
 	end
 	return true
 end
-
--- Nuage de fécule flottant (ne remplace que l'air).
-function st.cloud(ctx, x, y, z)
-	local pr, c = ctx.pr, ctx.c
-	local rx, ry, rz = pr:next(3, 7), pr:next(1, 2), pr:next(3, 7)
-	if not fits(ctx, x - rx, y - ry, z - rz, x + rx, y + ry, z + rz) then
-		return false
-	end
-	for dz = -rz, rz do
-		for dy = -ry, ry do
-			for dx = -rx, rx do
-				local d = (dx / rx) ^ 2 + (dy / ry) ^ 2 + (dz / rz) ^ 2
-				if d <= 1 and (d < 0.6 or pr:next(1, 3) > 1) then
-					put_air(ctx, x + dx, y + dy, z + dz, c.starch_cloud)
-				end
-			end
-		end
-	end
-	return true
-end

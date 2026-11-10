@@ -1,8 +1,8 @@
 # cavepatate_mineral_sap — généré par _generate.py (original, CC BY-SA 3.0)
 . = transparent
-a = #5a1e6a
-b = #9a3ab0
-c = #e08af0
+a = #6a1680
+b = #b434d8
+c = #f496ff
 
 ................
 ...........a....

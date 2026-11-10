@@ -27,5 +27,5 @@ Entrée : `$ARGUMENTS` et/ou le message de l'utilisateur, plus `.claude/specs/SP
    Dépend de : T01
    Fait quand : nodes enregistrés, textures présentes, traductions, lint + load_test OK
    ```
-   Ordre type : socle (nodes de base + textures) → génération de la zone → habillage et décorations → structures → butin et recettes → réglages → commande `/cavepatate` → finitions.
+   Ordre type : socle (nodes de base + textures) → génération de la zone → habillage et décorations → structures → butin et recettes → réglages → commande `/patate` → finitions.
 6. Présenter un résumé court à l'utilisateur (vision, nombre de blocs/structures, premières tâches) et demander validation avant d'implémenter.

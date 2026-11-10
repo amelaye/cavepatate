@@ -18,7 +18,7 @@ local function load(file)
 end
 
 -- Ordre : utilitaires -> objets -> blocs -> formes dérivées -> recettes -> placement
--- des caves -> structures -> générateur -> butin -> commandes.
+-- des caves -> structures -> générateur -> ambiance -> butin -> commandes.
 load("util")
 load("items")
 load("nodes")
@@ -30,6 +30,7 @@ load("crafts")
 load("cave")
 load("structures")
 load("mapgen")
+load("ambience")
 load("loot")
 load("commands")
 

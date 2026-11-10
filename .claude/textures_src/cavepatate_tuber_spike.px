@@ -1,9 +1,9 @@
 # cavepatate_tuber_spike — généré par _generate.py (original, CC BY-SA 3.0)
 . = transparent
-a = #4f3d24
-b = #80745c
-c = #a89c82
-d = #d0c4a8
+a = #a86e14
+b = #cc9424
+c = #e6b43c
+d = #fcd872
 
 .......a........
 .......ad.......

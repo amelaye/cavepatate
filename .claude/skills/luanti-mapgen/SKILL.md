@@ -18,12 +18,12 @@ Architecture éprouvée, calquée sur le mod Friandises du même auteur (`~/Docu
 
 | Fichier | Rôle |
 |---|---|
-| `src/cave.lua` | réglages, bruits, `cave.get(cx, cz)`, `caves_in(minp, maxp)`, `find_nearest`, `floor_at`, `biome_at`, `pillar_at`, `arena_site`, `chunk_geometry`, évitement de Friandises |
+| `src/cave.lua` | réglages, bruits, `cave.get(cx, cz)`, `caves_in(minp, maxp)`, `find_nearest`, `floor_at`, `biome_at`, `path_at`, `arena_site`, `chunk_geometry`, évitement de Friandises |
 | `src/mapgen.lua` | `register_on_generated` (main env) : `carve` (creusement, matériaux par sous-biome `MATERIALS`, sentiers, eau, coque veinée, conversion des minerais MTG `c.ore_map`, contamination, repérage des points de lumière) puis `decorate` (arène, structures du sol et du plafond, nuages, petites décorations `FLOOR_DECOR`) ; lumière posée à la fin là où l'air est resté libre ; `cavepatate.content_ids()` exporte les IDs |
 | `src/structures.lua` | constructeurs `st.<nom>(ctx, x, y, z, blighted)` (24, tous testés) + `st.arena(ctx, site)` ; `st.tuber_tree` sert aussi à la pousse d'arbre (wood.lua) |
 | `src/loot.lua` | LBM marqueurs → `default:chest` garni |
 
-`ctx` = `{ data, p2, area, minp, maxp, sx, sy, pr, c (content IDs), cav, reserved }`. Les colonnes calculées par `carve` sont dans `col_floor/col_biome/col_pillar[(z-minp.z)*sx + (x-minp.x) + 1]`.
+`ctx` = `{ data, p2, area, minp, maxp, sx, sy, pr, c (content IDs), cav, reserved }`. Les colonnes calculées par `carve` sont dans `col_floor/col_biome[(z-minp.z)*sx + (x-minp.x) + 1]`.
 
 ## 2. Ajouter une structure
 
@@ -56,7 +56,7 @@ Mesure de référence : 100 à 420 ms par chunk de cave (moyenne 170 ms), enviro
 ## 5. Vérifier une modification
 
 1. `lint.sh` + `load_test.sh` (skill `luanti-test`) : chargement sans erreur.
-2. **Génération** : en jeu, nouveau monde (`/luanti-play --new --launch`), `/cavepatate goto`. Ou, pour une vérification automatique, un outil **temporaire hors projet** (scratchpad) :
+2. **Génération** : en jeu, nouveau monde (`/luanti-play --new --launch`), `/patate` puis `/teleport` aux coordonnées affichées. Ou, pour une vérification automatique, un outil **temporaire hors projet** (scratchpad) :
    - un mini-mod de test lié dans `worldmods/` d'un monde jetable (mapgen v7) ;
    - il appelle `cavepatate.cave.find_nearest`, `core.emerge_area` sur une coupe verticale et une tranche horizontale, lit les nœuds au VoxelManip, écrit des grilles texte, puis appelle `core.request_shutdown()` ;
    - les grilles sont converties en PNG avec `png_write` de `pixelart.py`, puis regardées.

@@ -1,5 +1,5 @@
 -- Placement et forme des caves patate : fonctions déterministes partagées par le
--- générateur (mapgen.lua), les structures et la commande /cavepatate.
+-- générateur (mapgen.lua), les structures et la commande /patate.
 --
 -- Le monde est découpé en cellules carrées de CELL nœuds (grille décalée d'une
 -- demi-cellule par rapport à celle de Friandises). Chaque cellule contient au plus
@@ -22,11 +22,12 @@ cave.CHANCE = setting("cavity_chance", 0.625)
 cave.YMIN = setting("cavity_ymin", -5000)
 cave.YMAX = setting("cavity_ymax", -3000)
 cave.FEATURES = setting("cavity_features", 20)
-cave.LIGHT = max(0, min(core.LIGHT_MAX, setting("cavity_light", 13)))
+cave.LIGHT = max(0, min(core.LIGHT_MAX, setting("cavity_light", 14)))
+cave.AMBIENCE = core.settings:get_bool("cavepatate_cavity_ambience", true)
 cave.ALIGN = core.settings:get_bool("cavepatate_cavity_align", true)
 
 cave.RXZ_MIN, cave.RXZ_MAX = 120, 200
-cave.RY_MIN, cave.RY_MAX = 34, 48
+cave.RY_MIN, cave.RY_MAX = 68, 82
 cave.SHELL = 1.25      -- distance normalisée de la fin de la coque
 cave.INFECT = 1.6      -- fin de la zone de contamination de la pierre
 cave.WARP = 0.25       -- force de la déformation 3D
@@ -50,8 +51,6 @@ local np_blight = { offset = 0, scale = 1, spread = { x = 90, y = 90, z = 90 },
 	seed = 30557, octaves = 2, persistence = 0.5, lacunarity = 2 }
 local np_grove = { offset = 0, scale = 1, spread = { x = 70, y = 70, z = 70 },
 	seed = 99173, octaves = 2, persistence = 0.5, lacunarity = 2 }
-local np_pillar = { offset = 0, scale = 1, spread = { x = 18, y = 18, z = 18 },
-	seed = 41129, octaves = 2, persistence = 0.6, lacunarity = 2 }
 local np_hash = { offset = 0, scale = 1, spread = { x = 80, y = 80, z = 80 },
 	seed = 52817, octaves = 2, persistence = 0.5, lacunarity = 2 }
 local np_path = { offset = 0, scale = 1, spread = { x = 60, y = 60, z = 60 },
@@ -60,14 +59,13 @@ local np_path = { offset = 0, scale = 1, spread = { x = 60, y = 60, z = 60 },
 -- Bruits ponctuels 2D, créés à la première utilisation (la graine du monde n'est
 -- connue qu'après le chargement des mods). Renommé en 5.12 : on garde l'ancien nom.
 local get_noise = core.get_value_noise or core.get_perlin
-local n_hills, n_blight, n_grove, n_pillar, n_hash, n_path
+local n_hills, n_blight, n_grove, n_hash, n_path
 local p2 = { x = 0, y = 0 }
 
 local function noises()
 	n_hills = get_noise(np_hills)
 	n_blight = get_noise(np_blight)
 	n_grove = get_noise(np_grove)
-	n_pillar = get_noise(np_pillar)
 	n_hash = get_noise(np_hash)
 	n_path = get_noise(np_path)
 end
@@ -98,13 +96,6 @@ function cave.path_at(x, z)
 	if not n_hills then noises() end
 	p2.x, p2.y = x, z
 	return math.abs(n_path:get_2d(p2)) < 0.035
-end
-
---- Vrai si un pilier naturel occupe la colonne (x, z).
-function cave.pillar_at(x, z)
-	if not n_hills then noises() end
-	p2.x, p2.y = x, z
-	return n_pillar:get_2d(p2) > 1.0
 end
 
 -- Géométrie des chunks (chunksize peut être un vecteur depuis 5.15)
@@ -216,14 +207,16 @@ function cave.caves_in(minp, maxp)
 	return list
 end
 
---- Cave la plus proche de `pos`, en cherchant `radius` cellules autour.
+--- Cave la plus proche de `pos`, en cherchant `radius` cellules autour. Les caves
+--- dont le centre est hors des limites de la carte (mapgen_limit) sont ignorées.
 function cave.find_nearest(pos, radius)
+	local limit = tonumber(core.get_mapgen_setting("mapgen_limit")) or 31007
 	local pcx, pcz = cave.cell_of(pos.x, pos.z)
 	local best, best_d
 	for cx = pcx - radius, pcx + radius do
 		for cz = pcz - radius, pcz + radius do
 			local cav = cave.get(cx, cz)
-			if cav then
+			if cav and math.abs(cav.x) <= limit and math.abs(cav.z) <= limit then
 				local d = vector.distance(pos, cav)
 				if not best_d or d < best_d then
 					best, best_d = cav, d

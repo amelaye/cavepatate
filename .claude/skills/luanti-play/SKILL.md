@@ -20,7 +20,7 @@ Lancer Luanti ouvre une fenêtre sur la machine de l'utilisateur : ne le faire q
 
 ## Checklist de vérification (à proposer à l'utilisateur)
 
-1. `/grantme all`, puis `/cavepatate goto` : téléportation vers la zone de cave la plus proche.
+1. `/grantme all`, `/patate` (coordonnées du centre de la cave la plus proche), puis `/teleport x y z` avec ces coordonnées (le centre est en l'air : prévoir `fly` ou la chute).
 2. Taille et forme : grandes salles praticables, transitions progressives avec la pierre normale, pas de trou vers la surface ni vers l'océan.
 3. Blocs : textures correctes (aucune texture manquante, qui s'affiche en damier), lumière d'ambiance, plantes et cristaux bien orientés (sol, plafond, murs).
 4. Structures : présentes mais rares, posées au sol, non tronquées en bordure de chunk, coffres remplis.

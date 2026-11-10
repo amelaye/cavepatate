@@ -3,7 +3,7 @@
 Mod **`cavepatate`** pour **Luanti** (ex-Minetest), jeu **Minetest Game** + **Farming Redo**.
 
 **Vision** : une **grande cave thématique « pomme de terre »**, générée sous terre dans le **monde normal**, inspirée de l'esprit de la *Poisonous Potato Update* de Minecraft. Le mod comprend la génération de la cave, ses **blocs** et ses **structures**.
-**Hors périmètre** : dimension, portail, mobs, ambre (sous toutes ses formes), tout ce qui n'est pas la patate ou ses dérivés.
+**Hors périmètre** : dimension, portail, mobs, ambre (sous toutes ses formes), nuages, piliers naturels, tout ce qui n'est pas la patate ou ses dérivés.
 **Originalité** : on reprend des *types* de blocs et une ambiance (roche-patate, blocs de patate, patate empoisonnée, racines, arbres-patates, ruines), **jamais** les noms, textures ou plans de structures de Minecraft.
 
 Spécifications : `.claude/specs/SPEC.md` (validée par l'utilisateur) et plan `.claude/specs/PLAN.md`.
@@ -20,7 +20,7 @@ Le dossier racine est le mod lui-même, tel qu'il sera installé dans `mods/cave
 ```
 mod.conf                  depends = default, farming · optional_depends = stairs, walls, doors, dye, vessels, moreblocks, friandises
 init.lua                  namespace global `cavepatate` + chargement ordonné de src/*.lua (rien d'autre)
-settingtypes.txt          réglages serveur (cellule, chance, profondeur, alignement, structures, lumière)
+settingtypes.txt          réglages serveur (cellule, chance, profondeur, alignement, structures, lumière, ambiance)
 README.md                 présentation du mod (anglais)
 src/util.lua              util.name("x") -> "cavepatate:x", util.tex("x") -> "cavepatate_x.png", util.item_exists
 src/items.lua             objets (patate vénéneuse, pelures, frites, huiles, sève…) + cavepatate.eat_risky
@@ -30,11 +30,12 @@ src/wood.lua              bois de tubercule : tige, planches, feuilles, pousse, 
 src/machines.lua          friteuse, trancheuse, raffinerie, pile, piédestal, tubercule flottant
 src/shapes.lua            More Blocks (stairsplus) ou escaliers/dalles MTG, murets
 src/crafts.lua            recettes (ignorées si un ingrédient d'un autre mod manque)
-src/cave.lua              placement par cellules + fonctions pures : floor_at, biome_at, pillar_at, arena_site
+src/cave.lua              placement par cellules + fonctions pures : floor_at, biome_at, path_at, arena_site
 src/structures.lua        constructeurs procéduraux (jamais hors du chunk)
 src/mapgen.lua            on_generated : carve + decorate
+src/ambience.lua          brume dorée légère + saturation quand un joueur est dans une cave (rendues à la sortie)
 src/loot.lua              LBM : marqueurs -> coffres garnis
-src/commands.lua          /cavepatate [goto]
+src/commands.lua          /patate : coordonnées du centre de la cave la plus proche (privilège teleport, comme /candycave)
 textures/                 cavepatate_<objet>[_<face>].png (16×16, originales ; sources dans .claude/textures_src/)
 locale/                   template.txt + cavepatate.fr.tr
 ```

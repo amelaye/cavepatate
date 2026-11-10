@@ -82,6 +82,37 @@ def eyes(g, positions, dark, light):
         setp(g, x - 1, y, light)
 
 
+def natural(seed, symbols, shares, weights=((8, 0.55), (16, 0.45)), grain=0.25):
+    """Grain fin à la Minetest Game : bruit multi-échelle + grain par pixel, découpé en
+    tons selon des proportions (`shares`, une par symbole) pour éviter les grosses taches
+    qui font ressortir la grille des blocs."""
+    r = random.Random(seed * 7 + 3)
+    n = fbm(seed, weights)
+    vals = [[n[y][x] + grain * r.random() for x in range(W)] for y in range(W)]
+    flat = sorted(v for row in vals for v in row)
+    cuts, acc = [], 0.0
+    for sh in shares[:-1]:
+        acc += sh
+        cuts.append(flat[min(len(flat) - 1, int(acc * len(flat)))])
+    return quantize(vals, cuts, symbols)
+
+
+def sprinkle(g, seed, sym, count, only=None):
+    """Pixels isolés (jamais côte à côte) : accents discrets répartis sur le bloc."""
+    r = random.Random(seed)
+    placed, tries = 0, 0
+    while placed < count and tries < 500:
+        tries += 1
+        x, y = r.randrange(W), r.randrange(W)
+        if only and g[y][x] not in only:
+            continue
+        if any(g[(y + dy) % W][(x + dx) % W] == sym for dx in (-1, 0, 1) for dy in (-1, 0, 1)):
+            continue
+        g[y][x] = sym
+        placed += 1
+    return g
+
+
 # ----------------------------------------------------------------- roches
 
 def stone_like(seed, palette, eye_dark, eye_light, eye_pos):
@@ -90,13 +121,14 @@ def stone_like(seed, palette, eye_dark, eye_light, eye_pos):
     return g
 
 
-TUBER = {"a": "#4d463a", "b": "#665c4a", "c": "#80745c", "d": "#998c70", "e": "#b0a286"}
-save("cavepatate_tuberstone", TUBER, stone_like(11, TUBER, "a", "e", [(3, 4), (11, 2), (8, 11), (13, 13)]))
+TUBER = {"a": "#b4820c", "b": "#c4921a", "c": "#d2a226", "d": "#deb034", "e": "#e8be44", "f": "#986a0a"}
+g = natural(11, "abcde", (0.10, 0.25, 0.30, 0.25, 0.10), weights=((8, 0.6), (16, 0.4)))
+sprinkle(g, 12, "f", 5, only="ab")
+save("cavepatate_tuberstone", TUBER, g)
 
-BLIGHT = {"a": "#2c3a1c", "b": "#3f5226", "c": "#56692f", "d": "#6e823c", "e": "#8ea04e", "f": "#5e3a5c"}
-g = stone_like(23, BLIGHT, "f", "e", [(2, 9), (10, 5), (13, 12)])
-for x, y in [(6, 2), (5, 14), (14, 7), (9, 9)]:
-    setp(g, x, y, "f")
+BLIGHT = {"a": "#304e1a", "b": "#395c1e", "c": "#426a24", "d": "#4c7829", "e": "#57862f", "f": "#2a4614"}
+g = natural(23, "abcde", (0.10, 0.25, 0.30, 0.25, 0.10), weights=((8, 0.6), (16, 0.4)))
+sprinkle(g, 24, "f", 5, only="ab")
 save("cavepatate_tuberstone_blighted", BLIGHT, g)
 
 
@@ -151,30 +183,25 @@ save("cavepatate_tuberstone_brick", TUBER, bricks(41))
 
 # ----------------------------------------------------------------- patates
 
-SKIN = {"a": "#4a3120", "b": "#6b4a2e", "c": "#8a6340", "d": "#a67c50", "e": "#bf9764"}
-g = quantize(fbm(53), [0.38, 0.5, 0.62], "bcde")
-eyes(g, [(2, 3), (10, 1), (6, 8), (13, 9), (3, 13), (11, 14)], "a", "e")
+SKIN = {"a": "#94600c", "b": "#be8a1a", "c": "#ca9824", "d": "#d6a62e", "e": "#e0b43a", "f": "#e8c24a"}
+g = natural(53, "bcdef", (0.10, 0.25, 0.30, 0.25, 0.10))
+sprinkle(g, 54, "a", 5, only="cd")
 save("cavepatate_potato_block", SKIN, g)
 
-FLESH = {"a": "#c9b27a", "b": "#d8c48c", "c": "#e6d6a3", "d": "#f1e6bd", "e": "#faf3d8"}
-g = quantize(fbm(61), [0.4, 0.5, 0.6], "bcde")
-r = random.Random(62)
-for _ in range(6):
-    setp(g, r.randrange(W), r.randrange(W), "a")
+FLESH = {"a": "#e0b430", "b": "#eac43e", "c": "#f0d050", "d": "#f6dc66", "e": "#fae680", "f": "#fdf0a4"}
+g = natural(61, "bcdef", (0.10, 0.25, 0.30, 0.25, 0.10), grain=0.2)
+sprinkle(g, 62, "a", 4, only="cd")
 save("cavepatate_potato_flesh", FLESH, g)
 
-ROT = {"a": "#2f4a1c", "b": "#4b6b26", "c": "#6a8c33", "d": "#8cad45", "e": "#b8d063", "f": "#3a2a3e"}
-g = quantize(fbm(71), [0.38, 0.5, 0.62], "bcde")
-rot = fbm(72, ((4, 0.7), (8, 0.3)))
-for y in range(W):
-    for x in range(W):
-        if rot[y][x] > 0.72:
-            g[y][x] = "f"
-eyes(g, [(3, 2), (12, 6), (7, 12)], "a", "e")
+ROT = {"a": "#3a6e1c", "b": "#447e22", "c": "#4e8c28", "d": "#58992e", "e": "#62a634", "f": "#6cb23a",
+       "g": "#86c64c"}
+g = natural(71, "bcdef", (0.10, 0.25, 0.30, 0.25, 0.10))
+sprinkle(g, 72, "a", 4, only="bc")
+sprinkle(g, 73, "g", 4, only="ef")
 save("cavepatate_blighted_potato_block", ROT, g)
 
 # Tapis de pelures : lanières recourbées, fond transparent
-PEEL = {".": "transparent", "a": "#5a3b20", "b": "#6b4a2a", "c": "#8a6236", "d": "#a98050", "e": "#d8c48c"}
+PEEL = {".": "transparent", "a": "#9a5c0e", "b": "#b8741a", "c": "#d08e26", "d": "#e2a836", "e": "#f6d26a"}
 g = blank()
 r = random.Random(81)
 for _ in range(15):
@@ -194,7 +221,7 @@ save("cavepatate_peel_carpet", PEEL, g)
 
 # ----------------------------------------------------------------- végétation
 
-ROOT = {".": "transparent", "a": "#3e2418", "b": "#6e3f26", "c": "#8c5a34", "d": "#a87a4a"}
+ROOT = {".": "transparent", "a": "#9a7420", "b": "#c49c34", "c": "#e0bc52", "d": "#f4da84"}
 g = blank()
 r = random.Random(101)
 for start in (3, 8, 12):
@@ -230,7 +257,7 @@ for sx, h, lean in ((7, 9, -0.25), (9, 7, 0.3), (5, 5, -0.4), (11, 6, 0.4)):
             g[13 - h + 1 + dy][tip + dx] = s
 save("cavepatate_glow_sprout", SPROUT, g)
 
-STEM = {"a": "#2f3318", "b": "#4a4f24", "c": "#646a30", "d": "#7d843c", "e": "#9aa04e"}
+STEM = {"a": "#78a636", "b": "#8cba42", "c": "#a2cc50", "d": "#bade66", "e": "#d4ee8c"}
 cols = value_noise(111, 8)
 g = blank()
 r = random.Random(112)
@@ -267,7 +294,7 @@ for y in range(W):
             g[y][x] = "d" if int(d * 1.3) % 2 else "c"
 save("cavepatate_tuber_stem_top", STEM, g)
 
-PLANK = {"a": "#5e5230", "b": "#7d6e40", "c": "#9a8a52", "d": "#b3a266", "e": "#c9b97d"}
+PLANK = {"a": "#b8800c", "b": "#cc9418", "c": "#dca624", "d": "#e8b834", "e": "#f2c84a"}
 grain = fbm(121, ((2, 0.3), (8, 0.7)))
 g = blank()
 for y in range(W):
@@ -283,8 +310,8 @@ for y, x in ((1, 5), (6, 12), (9, 2), (13, 9)):
     setp(g, x, y, "a")
 save("cavepatate_tuber_planks", PLANK, g)
 
-LEAF = {".": "transparent", "a": "#1f3d16", "b": "#2e5a1f", "c": "#3f7429", "d": "#548f35",
-        "e": "#72ad47", "f": "#ead6f2", "g": "#f0d040"}
+LEAF = {".": "transparent", "a": "#1e5414", "b": "#2c761c", "c": "#3e9826", "d": "#58b832",
+        "e": "#84d448", "f": "#f6dcff", "g": "#ffe040"}
 g = quantize(fbm(131), [0.36, 0.46, 0.56, 0.64], "abcde")
 r = random.Random(132)
 for _ in range(14):
@@ -336,28 +363,26 @@ def side_overlay(top_grid, seed, depth=(2, 5)):
     return g
 
 
-STARCH = {"a": "#8f8670", "b": "#a89f88", "c": "#bfb7a0", "d": "#d3ccb6", "e": "#e6e0cc"}
-g = quantize(fbm(141, ((2, 0.5), (4, 0.3), (8, 0.2))), [0.4, 0.5, 0.58, 0.66], "abcde")
-for x, y in ((3, 6), (4, 6), (5, 7), (11, 12), (12, 12)):   # fines fissures
-    setp(g, x, y, "a")
+STARCH = {"a": "#e6c244", "b": "#ecce56", "c": "#f2d86a", "d": "#f6e280", "e": "#faec9a", "f": "#d8b034"}
+g = natural(141, "abcde", (0.10, 0.25, 0.30, 0.25, 0.10), grain=0.2)
+sprinkle(g, 142, "f", 4, only="ab")
 save("cavepatate_starchstone", STARCH, g)
 
-SOIL = {"a": "#4a3522", "b": "#5e4430", "c": "#75573c", "d": "#8c6a4a", "e": "#b39468"}
-g = quantize(fbm(151), [0.38, 0.5, 0.62], "abcd")
-r = random.Random(152)
-for _ in range(10):
-    setp(g, r.randrange(W), r.randrange(W), "e")
+SOIL = {"a": "#ac6412", "b": "#bc741a", "c": "#c88422", "d": "#d4922c", "e": "#e0a23a", "f": "#ecb850"}
+g = natural(151, "abcde", (0.10, 0.25, 0.30, 0.25, 0.10))
+sprinkle(g, 152, "f", 5, only="de")
 save("cavepatate_tuber_soil", SOIL, g)
 
-TURF = {"a": "#5a3b20", "b": "#7a5230", "c": "#94683c", "d": "#b38650", "e": "#d8c48c", "f": "#e8d8a8"}
-turf = quantize(fbm(161), [0.45, 0.58], "bcd")
-strokes(turf, 162, 16, "def", edge="a")
+TURF = {"a": "#d08a14", "b": "#da981c", "c": "#e4a626", "d": "#ecb432", "e": "#f4c240", "f": "#fcd462"}
+turf = natural(161, "abcde", (0.10, 0.25, 0.30, 0.25, 0.10), grain=0.35)
+sprinkle(turf, 162, "f", 6, only="de")
 save("cavepatate_peel_turf_top", TURF, turf)
 save("cavepatate_peel_turf_side", dict(TURF, **{".": "transparent"}), side_overlay(turf, 163))
 
-BTURF = {"a": "#2c3a1c", "b": "#3f5226", "c": "#56692f", "d": "#6e823c", "e": "#8ea04e", "f": "#5e3a5c"}
-bturf = quantize(fbm(171), [0.45, 0.58], "bcd")
-strokes(bturf, 172, 14, "def", edge="a")
+BTURF = {"a": "#407620", "b": "#488424", "c": "#509028", "d": "#589c2e", "e": "#62a834", "f": "#70b63e",
+         }
+bturf = natural(171, "abcde", (0.10, 0.25, 0.30, 0.25, 0.10), grain=0.35)
+sprinkle(bturf, 172, "f", 5, only="de")
 save("cavepatate_blighted_peel_turf_top", BTURF, bturf)
 save("cavepatate_blighted_peel_turf_side", dict(BTURF, **{".": "transparent"}), side_overlay(bturf, 173))
 
@@ -370,26 +395,24 @@ for y in range(W):
             g[y][x] = "e"
 save("cavepatate_tuber_farmland", SOIL, g)
 
-PATH = {"a": "#6a5038", "b": "#82664a", "c": "#9a7e5e", "d": "#b09474", "e": "#c4aa88"}
-g = quantize(fbm(191, ((4, 0.6), (8, 0.4))), [0.42, 0.52, 0.62], "bcde")
-r = random.Random(192)
-for _ in range(7):
-    setp(g, r.randrange(W), r.randrange(W), "a")
+PATH = {"a": "#b8862a", "b": "#c89430", "c": "#d2a03a", "d": "#dcac46", "e": "#e4b852", "f": "#ecc460"}
+g = natural(191, "bcdef", (0.10, 0.25, 0.30, 0.25, 0.10))
+sprinkle(g, 192, "a", 5, only="bc")
 save("cavepatate_tuber_path", PATH, g)
 
-GRATE = {"a": "#a88a50", "b": "#c4a868", "c": "#dcc488", "d": "#ecdaa4", "e": "#f8eecc"}
-g = quantize(fbm(201), [0.45, 0.58], "bcd")
+GRATE = {"a": "#e4b42e", "b": "#ecc03c", "c": "#f2ca4a", "d": "#f6d45c", "e": "#fadf72", "f": "#d8a428"}
+g = natural(201, "abcde", (0.10, 0.25, 0.30, 0.25, 0.10), grain=0.3)
 r = random.Random(202)
-for _ in range(26):                      # lamelles de râpure en diagonale
+for _ in range(10):                      # fines lamelles de râpure en diagonale
     x, y = r.randrange(W), r.randrange(W)
-    s = r.choice("ade")
-    for k in range(r.randint(2, 4)):
-        setp(g, x + k, y + k, s)
+    sym = r.choice("ef")
+    for k in range(2):
+        setp(g, x + k, y + k, sym)
 save("cavepatate_potato_gratings", GRATE, g)
 
-save("cavepatate_mineral_blight", {".": "transparent", "a": "#3e5a1c", "b": "#7aa036", "c": "#a8d050"},
+save("cavepatate_mineral_blight", {".": "transparent", "a": "#2e6a14", "b": "#6cc22e", "c": "#b8f458"},
      overlay_clusters(211, "bca"))
-save("cavepatate_mineral_sap", {".": "transparent", "a": "#5a1e6a", "b": "#9a3ab0", "c": "#e08af0"},
+save("cavepatate_mineral_sap", {".": "transparent", "a": "#6a1680", "b": "#b434d8", "c": "#f496ff"},
      overlay_clusters(221, "bca"))
 
 g = blank()
@@ -402,11 +425,11 @@ for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
 for i in range(3, 13):
     setp(g, i, i, "c")
     setp(g, i, W - 1 - i, "c")
-save("cavepatate_compressed_frame", {".": "transparent", "a": "#101a08", "b": "#c8e070", "c": "#1e2e1080"}, g)
+save("cavepatate_compressed_frame", {".": "transparent", "a": "#101a08", "b": "#d8f478", "c": "#1e2e1080"}, g)
 
-MASH = {"a": "#3f5a22", "b": "#5a7a2e", "c": "#749a3a", "d": "#8fb84a", "e": "#b4d46a"}
-g = quantize(fbm(231, ((2, 0.6), (4, 0.4))), [0.4, 0.5, 0.6], "bcde")
-strokes(g, 232, 5, "e", length=(4, 7))
+MASH = {"a": "#5a9230", "b": "#66a036", "c": "#70ac3c", "d": "#7ab842", "e": "#86c44a", "f": "#a2d862"}
+g = natural(231, "abcde", (0.10, 0.25, 0.30, 0.25, 0.10), grain=0.2)
+sprinkle(g, 232, "f", 3, only="de")
 save("cavepatate_blighted_mash", MASH, g)
 
 PEELG = {"a": "#8c8c8c", "b": "#a8a8a8", "c": "#c4c4c4", "d": "#dedede", "e": "#f4f4f4"}
@@ -415,8 +438,8 @@ strokes(g, 242, 16, "de", edge="a")
 save("cavepatate_peel_block", PEELG, g)
 
 # Pelures corrompues : texture animée 16×64 (4 images), étincelles qui se déplacent
-CPEEL = {"a": "#1e1424", "b": "#34203e", "c": "#4a2e52", "d": "#5e4a3a", "e": "#7a6a2e",
-         "f": "#e070f0", "g": "#ffffff"}
+CPEEL = {"a": "#26103a", "b": "#44185e", "c": "#62287e", "d": "#6e5a24", "e": "#94802a",
+         "f": "#ff6cff", "g": "#ffffff"}
 base = quantize(fbm(251), [0.42, 0.55], "bcd")
 strokes(base, 252, 12, "de", edge="a")
 frames = []
@@ -431,11 +454,11 @@ for k in range(4):
     frames += fr
 save("cavepatate_blighted_peel_block", CPEEL, frames)
 
-BAKED = {"a": "#5a3a18", "b": "#8a5a24", "c": "#a8722e", "d": "#c48c3c", "e": "#dca858"}
+BAKED = {"a": "#a8560a", "b": "#c86e12", "c": "#dc861c", "d": "#eca02c", "e": "#f8bc44"}
 save("cavepatate_baked_brick", BAKED, bricks(261))
-CHAR = {"a": "#120e0b", "b": "#2e241c", "c": "#3e3226", "d": "#524232", "e": "#6a5640"}
+CHAR = {"a": "#1a0f08", "b": "#3c2614", "c": "#52361c", "d": "#6c4826", "e": "#8a6034"}
 save("cavepatate_charred_brick", CHAR, bricks(262))
-STALE = {"a": "#3e3e22", "b": "#6a6a3a", "c": "#84824a", "d": "#9c9a5a", "e": "#b4b070", "f": "#4f7a2a"}
+STALE = {"a": "#4e4a14", "b": "#80781e", "c": "#a29a2a", "d": "#c0b63a", "e": "#dad254", "f": "#52a424"}
 g = bricks(263)
 r = random.Random(264)
 for _ in range(9):
@@ -444,11 +467,7 @@ for _ in range(9):
     setp(g, x + 1, y, "f")
 save("cavepatate_stale_brick", STALE, g)
 
-CLOUD = {"a": "#c8ccd4", "b": "#dde0e6", "c": "#eceef2", "d": "#f6f7f9", "e": "#ffffff"}
-save("cavepatate_starch_cloud", CLOUD,
-     quantize(fbm(271, ((2, 0.5), (4, 0.5))), [0.38, 0.47, 0.56, 0.64], "abcde"))
-
-ROOTW = {"a": "#3a2414", "b": "#5a3a22", "c": "#744e2e", "d": "#8e663e", "e": "#a8804e"}
+ROOTW = {"a": "#a0701a", "b": "#bc8a26", "c": "#d2a234", "d": "#e4b848", "e": "#f2d064"}
 cols = value_noise(281, 8)
 g = [["b" if cols[0][x] < 0.4 else ("c" if cols[0][x] < 0.65 else "d") for x in range(W)] for _ in range(W)]
 r = random.Random(282)
@@ -482,7 +501,7 @@ def sprite(name, palette, rows):
     save(name, dict({".": "transparent"}, **palette), [list(r) for r in rows])
 
 
-sprite("cavepatate_blighted_potato", {"a": "#2a3e16", "b": "#4b6b26", "c": "#6a8c33", "d": "#8cad45", "e": "#b8d063",
+sprite("cavepatate_blighted_potato", {"a": "#2a5a12", "b": "#3e8018", "c": "#58a424", "d": "#7cc634", "e": "#b6ea58",
                                       "f": "#3a2a3e"}, """
 ................
 ................
@@ -519,7 +538,7 @@ sprite("cavepatate_blighted_slice", {"a": "#2a3e16", "b": "#6a8c33", "c": "#b8d0
 ....aaaa........
 ................""")
 
-sprite("cavepatate_potato_peel", {"a": "#4a3120", "b": "#7a5230", "c": "#a67c50", "d": "#e6d6a3"}, """
+sprite("cavepatate_potato_peel", {"a": "#6a3e14", "b": "#a4641a", "c": "#cf963c", "d": "#f2da88"}, """
 ................
 ................
 ..........aa....
@@ -648,7 +667,7 @@ sprite("cavepatate_toxic_sap", {"a": "#3e1048", "b": "#7a2a90", "c": "#b44ad0", 
 ................
 ................""")
 
-sprite("cavepatate_tuber_fruit", {"a": "#2e5a1f", "b": "#3f7429", "c": "#c46a12", "d": "#f0a030", "e": "#ffd27a",
+sprite("cavepatate_tuber_fruit", {"a": "#2c6a1a", "b": "#3e9826", "c": "#d87a10", "d": "#ffb02c", "e": "#ffdc7a",
                                   "f": "#fff6c8"}, """
 .......aa.......
 .......ab.......
@@ -667,7 +686,7 @@ sprite("cavepatate_tuber_fruit", {"a": "#2e5a1f", "b": "#3f7429", "c": "#c46a12"
 ................
 ................""")
 
-sprite("cavepatate_tuber_sprout", {"a": "#1f3d16", "b": "#3f7429", "c": "#72ad47", "d": "#6b4a2e", "e": "#a67c50"}, """
+sprite("cavepatate_tuber_sprout", {"a": "#1e5414", "b": "#3e9826", "c": "#84d448", "d": "#91591e", "e": "#cf963c"}, """
 ................
 ................
 ................
@@ -685,7 +704,7 @@ sprite("cavepatate_tuber_sprout", {"a": "#1f3d16", "b": "#3f7429", "c": "#72ad47
 .....dddddd.....
 ................""")
 
-sprite("cavepatate_tuber_spike", {"a": "#4f3d24", "b": "#80745c", "c": "#a89c82", "d": "#d0c4a8"}, """
+sprite("cavepatate_tuber_spike", {"a": "#a86e14", "b": "#cc9424", "c": "#e6b43c", "d": "#fcd872"}, """
 .......a........
 .......ad.......
 .......ab.......
@@ -703,7 +722,7 @@ sprite("cavepatate_tuber_spike", {"a": "#4f3d24", "b": "#80745c", "c": "#a89c82"
 ..abbdcbcbbbba..
 ..aaaaaaaaaaaa..""")
 
-sprite("cavepatate_tuber_flower", {"a": "#2e5a1f", "b": "#4f8f35", "c": "#ead6f2", "d": "#b98ad8", "e": "#f0d040"}, """
+sprite("cavepatate_tuber_flower", {"a": "#2c6a1a", "b": "#4aa82c", "c": "#f6dcff", "d": "#c07ef0", "e": "#ffd83a"}, """
 ................
 ................
 .....cc..cc.....
@@ -721,7 +740,7 @@ sprite("cavepatate_tuber_flower", {"a": "#2e5a1f", "b": "#4f8f35", "c": "#ead6f2
 .......ab.......
 .......ab.......""")
 
-sprite("cavepatate_blighted_head_face", {"a": "#1a2a0e", "b": "#4b6b26", "c": "#6a8c33", "d": "#8cad45",
+sprite("cavepatate_blighted_head_face", {"a": "#14300a", "b": "#3e8018", "c": "#58a424", "d": "#7cc634",
                                          "e": "#d0f070", "f": "#2a0e14"}, """
 cccdcccccccdcccc
 ccdddccccccdddcc
@@ -759,8 +778,8 @@ abccccccccccccba
 abbbbbbbbbbbbbba
 aaaaaaaaaaaaaaaa""")
 
-sprite("cavepatate_fryer_side", {"a": "#2a2a2e", "b": "#5a5a62", "c": "#8a8a94", "d": "#7d6e40", "e": "#9a8a52",
-                                 "f": "#b3a266"}, """
+sprite("cavepatate_fryer_side", {"a": "#2a2a2e", "b": "#5a5a62", "c": "#9a9aa6", "d": "#9e782a", "e": "#bf963a",
+                                 "f": "#d8b250"}, """
 aaaaaaaaaaaaaaaa
 bcccccccccccccbb
 bbbbbbbbbbbbbbbb
@@ -778,7 +797,7 @@ eeeeeeeeefeeeeee
 deeeeeeeeeeeeefe
 dddddddddddddddd""")
 
-sprite("cavepatate_slicer_top", {"a": "#4a4a52", "b": "#8a8a94", "c": "#d0d4dc", "d": "#a89f88", "e": "#bfb7a0"}, """
+sprite("cavepatate_slicer_top", {"a": "#4a4a52", "b": "#8a8a94", "c": "#dce0e8", "d": "#d6b978", "e": "#e4cc8e"}, """
 dddddddddddddddd
 deeeeeeeeeeeeeed
 deaaaaaaaaaaaaed
@@ -796,7 +815,7 @@ deaaaaaaaaaaaaed
 deeeeeeeeeeeeeed
 dddddddddddddddd""")
 
-sprite("cavepatate_slicer_side", {"a": "#3a3a42", "b": "#6a6a74", "c": "#9a9aa4", "d": "#c8ccd4", "e": "#a89f88"}, """
+sprite("cavepatate_slicer_side", {"a": "#3a3a42", "b": "#6a6a74", "c": "#a4a4b0", "d": "#d8dce4", "e": "#d6b978"}, """
 aaaaaaaaaaaaaaaa
 abbbbbbbbbbbbbba
 abccccccccccccba
@@ -871,7 +890,7 @@ aaaaaaaaaaaaaaaa""")
 
 
 def battery_top(on):
-    pal = {"a": "#4a3120", "b": "#8a6340", "c": "#a67c50", "d": "#5a5a62", "e": "#c88a4a", "f": "#d0d4dc",
+    pal = {"a": "#6a3e14", "b": "#b4762a", "c": "#cf963c", "d": "#5a5a62", "e": "#e6b65a", "f": "#d8dce4",
            "g": "#fff070", "h": "#ffffff"}
     rows = """
 bbbbbbbbbbbbbbbb
@@ -900,8 +919,8 @@ for state in ("off", "on"):
     pal, rows = battery_top(state == "on")
     sprite("cavepatate_battery_top_" + state, pal, rows)
 
-sprite("cavepatate_battery_side", {"a": "#4a3120", "b": "#6b4a2e", "c": "#8a6340", "d": "#a67c50",
-                                   "e": "#c88a4a", "f": "#e8b070"}, """
+sprite("cavepatate_battery_side", {"a": "#6a3e14", "b": "#91591e", "c": "#b4762a", "d": "#cf963c",
+                                   "e": "#e6b65a", "f": "#f8d686"}, """
 bbbbbbbbbbbbbbbb
 bbbbbbbbbbbbbbbb
 bbbbbbbbbbbbbbbb
@@ -919,8 +938,8 @@ ccdccccccccccccc
 cccccccccdcccccc
 cccccccccccccccc""")
 
-sprite("cavepatate_floatater_top", {"a": "#a89f88", "b": "#dde0e6", "c": "#f6f7f9", "d": "#ffffff", "e": "#6b4a2e",
-                                    "f": "#a67c50"}, """
+sprite("cavepatate_floatater_top", {"a": "#c4a464", "b": "#e9ca6e", "c": "#f9e9aa", "d": "#fff6d2", "e": "#91591e",
+                                    "f": "#cf963c"}, """
 bbbbbbbbbbbbbbbb
 bccccccccccccccb
 bccccccdcccccccb
@@ -938,8 +957,8 @@ bccccccccccccccb
 bccccccccccccccb
 bbbbbbbbbbbbbbbb""")
 
-sprite("cavepatate_floatater_side", {"a": "#4a3120", "b": "#6b4a2e", "c": "#8a6340", "d": "#a67c50",
-                                     "e": "#f6f7f9", "f": "#c8ccd4"}, """
+sprite("cavepatate_floatater_side", {"a": "#6a3e14", "b": "#91591e", "c": "#b4762a", "d": "#cf963c",
+                                     "e": "#f9e9aa", "f": "#e9ca6e"}, """
 eeeeeffeeeeffeee
 feeeeeeeeeeeeeef
 cccccccccccccccc

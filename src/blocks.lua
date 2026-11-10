@@ -1,5 +1,5 @@
 -- Blocs construits ou fabriqués : blocs de patate, patate vénéneuse (et ses blocs
--- compressés), purée, tête, pelures (16 couleurs), briques, nuage de fécule.
+-- compressés), purée, tête, pelures (16 couleurs), briques.
 
 local S = cavepatate.S
 local util = cavepatate.util
@@ -165,36 +165,3 @@ for _, b in ipairs({
 		sounds = stone_sounds,
 	})
 end
-
--- Nuage de fécule : flotte dans la cave ; peut se poser dans le vide, à deux
--- blocs devant soi (clic droit sans viser de bloc).
-local function place_in_air(itemstack, user)
-	if not (user and user:is_player()) then
-		return itemstack
-	end
-	local pname = user:get_player_name()
-	local eye = vector.offset(user:get_pos(), 0, user:get_properties().eye_height or 1.5, 0)
-	local pos = vector.round(vector.add(eye, vector.multiply(user:get_look_dir(), 2)))
-	local def = core.registered_nodes[core.get_node(pos).name]
-	if not (def and def.buildable_to) then
-		return itemstack
-	end
-	if core.is_protected(pos, pname) then
-		core.record_protection_violation(pos, pname)
-		return itemstack
-	end
-	core.set_node(pos, { name = name("starch_cloud") })
-	if not core.is_creative_enabled(pname) then
-		itemstack:take_item()
-	end
-	return itemstack
-end
-
-core.register_node(name("starch_cloud"), {
-	description = S("Starch Cloud"),
-	tiles = { tex("starch_cloud") },
-	is_ground_content = false,
-	groups = { snappy = 3, oddly_breakable_by_hand = 3 },
-	sounds = leaves_sounds,
-	on_secondary_use = place_in_air,
-})

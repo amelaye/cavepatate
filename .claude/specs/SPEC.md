@@ -9,13 +9,14 @@ L'architecture de génération est calquée sur celle du mod Friandises du même
 ## Génération (src/cave.lua, src/mapgen.lua)
 
 - **Placement** : une cave au plus par cellule de 5000 nœuds (62,5 %). La grille est décalée d'une demi-cellule par rapport à Friandises, et toute cave qui chevaucherait une caverne de Friandises est supprimée. Le tirage est déterministe : `PcgRandom(graine du monde, cx, cz)`.
-- **Forme** : ellipsoïde rx/rz de 120 à 200, ry de 34 à 48, déformé par un bruit 3D (WARP 0,25). Coque `1 ≤ d < 1,25` (roche-tubercule veinée de patate et de chair), contamination progressive de la pierre jusqu'à `d < 1,6`.
+- **Forme** : ellipsoïde rx/rz de 120 à 200, ry de 68 à 82 (hauteur libre d'environ 100 à 120 nœuds, relevée de 50 à la demande de l'utilisateur), déformé par un bruit 3D (WARP 0,25). Coque `1 ≤ d < 1,25` (roche-tubercule veinée de patate et de chair), contamination progressive de la pierre jusqu'à `d < 1,6`.
 - **Alignement** : le sol de base est placé 14 nœuds au-dessus du bas d'un chunk, pour que les grandes structures tiennent dans un seul chunk.
-- **Sol** : `floor_base + bruit × 10` ; cuvettes noyées sous `floor_base − 3` ; piliers naturels (bruit 2D > 1).
+- **Sol** : `floor_base + bruit × 10` ; cuvettes noyées sous `floor_base − 3`. Pas de piliers naturels (retirés à la demande de l'utilisateur).
 - **Sous-biomes** (bruits 2D) : Flétrissure (< −0,45), Râpures (bruit dédié > 0,5), Bosquet (> 0,2), Champs (le reste). Sentiers (|bruit| < 0,035) dans Champs et Bosquet.
 - **Structures** (src/structures.lua) : elles n'écrivent jamais hors du chunk et réservent leur zone. Patates géantes, arbres-tubercules, stalagmites et stalactites, patates suspendues, rideaux de racines, silos effondrés (coffre), autels des germes, arène (une par cave : site le plus plat près du centre, construite par le seul chunk qui la contient, 2 coffres riches).
 - **Petites décorations** : germes, plants `farming:potato_4`, tapis de pelures, racines et pointes au plafond.
-- **Lumière** : cave **naturellement lumineuse**, sans bloc lumineux visible. Lumière invisible `cavepatate:cave_light` (niveau 13 par défaut) posée en quinconce comme dans Friandises : colonnes x%4==0,z%4==0 et x%4==2,z%4==2, un point à 2 nœuds au-dessus du sol (ou de l'eau) puis tous les 8 nœuds. Posée après les structures, là où l'air est resté libre. Pas d'ambre (retiré à la demande de l'utilisateur).
+- **Lumière** : cave **naturellement lumineuse**, sans bloc lumineux visible. Lumière invisible `cavepatate:cave_light` (niveau 14 par défaut) en grille serrée : une colonne sur deux en x et en z, un point à 2 nœuds au-dessus du sol (ou de l'eau) puis tous les 4 nœuds, décalé de 2 d'une colonne à l'autre ; la plupart des cases d'air sont au niveau 12 ou 13 (l'ancienne grille en quinconce tous les 8 nœuds donnait 9 à 11, jugé trop sombre). Posée après les structures, là où l'air est resté libre. Pas d'ambre (retiré à la demande de l'utilisateur).
+- **Ambiance** (src/ambience.lua, réglage `cavepatate_cavity_ambience`) : dans une cave, ciel uni et brouillard jaune pâle `#e9d89a` commençant à 75 % de la distance de vue, saturation 1,1 ; tout est rendu à la sortie. L'utilisateur a trouvé une brume plus jaune et plus dense trop présente.
 - **Butin** : marqueurs `cavepatate:loot` / `loot_rich` remplacés par un `default:chest` garni par un LBM (`run_at_every_load = true`).
 - Les nœuds de la cave ont `is_ground_content = false`. Sinon les grottes de MTG creusent la coque à la jointure des chunks : un artefact constaté puis corrigé.
 
@@ -41,7 +42,7 @@ L'utilisateur tient à avoir **tous** les blocs de la dimension. Chacun a un éq
 | Powerful potato | `mighty_potato` (fait pousser des racines robustes) | nodes.lua |
 | Vicious potato | **non repris** : il attaque les joueurs, donc assimilé à un mob (refus de l'utilisateur) | — |
 | Potato fruit (lumineux, empoisonne) | `tuber_fruit` | wood.lua |
-| Floatato (nuage, posable dans le vide) | `starch_cloud` | blocks.lua |
+| Floatato (nuage, posable dans le vide) | **retiré à la demande de l'utilisateur** (pas de nuages) | — |
 | Floatater (vole quand activé) | `floatater` (s'élève au clic droit avec sa charge) | machines.lua |
 | Ambre (bloc, cristaux, éclats) | **retiré à la demande de l'utilisateur** | — |
 | Bloc de pelures corrompues | `blighted_peel_block` (animé, lumineux ; ne fait apparaître aucun mob) | blocks.lua |

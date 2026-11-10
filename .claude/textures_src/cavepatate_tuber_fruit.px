@@ -1,10 +1,10 @@
 # cavepatate_tuber_fruit — généré par _generate.py (original, CC BY-SA 3.0)
 . = transparent
-a = #2e5a1f
-b = #3f7429
-c = #c46a12
-d = #f0a030
-e = #ffd27a
+a = #2c6a1a
+b = #3e9826
+c = #d87a10
+d = #ffb02c
+e = #ffdc7a
 f = #fff6c8
 
 .......aa.......
