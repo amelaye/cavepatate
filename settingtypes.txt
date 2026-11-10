@@ -1,0 +1,26 @@
+# Probability (0 to 1) that a world cell contains a potato cave.
+# Default: about 10 caves on a map from -10000 to 10000.
+cavepatate_cavity_chance (Potato cave chance) float 0.625 0 1
+
+# Horizontal size of a world cell in nodes (one potato cave at most per cell).
+# The grid is offset by half a cell from the one of the Friandises mod.
+cavepatate_cavity_cell_size (Potato cave cell size) int 5000 600 20000
+
+# Lowest Y of potato caves (the whole cave, shell included, stays between min and max Y).
+cavepatate_cavity_ymin (Potato cave min Y) int -5000 -30000 0
+
+# Highest Y of potato caves.
+cavepatate_cavity_ymax (Potato cave max Y) int -3000 -30000 0
+
+# Move each cave up or down so that its floor sits near the bottom of a map chunk:
+# large structures then have room to be built on it.
+# Disable it in a world generated before this setting existed.
+cavepatate_cavity_align (Align potato caves on map chunks) bool true
+
+# Placement attempts of large features (giant potatoes, tuber trees, stalagmites...)
+# per map chunk, on the floor and on the ceiling.
+cavepatate_cavity_features (Potato cave features per chunk) int 20 0 100
+
+# Light level of the invisible light filling potato caves evenly (14 = brightest).
+# 0 leaves the caves lit only by their glowing sprouts, fruits and blighted blocks.
+cavepatate_cavity_light (Potato cave light) int 13 0 14

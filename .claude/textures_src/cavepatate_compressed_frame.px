@@ -1,0 +1,22 @@
+# cavepatate_compressed_frame — généré par _generate.py (original, CC BY-SA 3.0)
+. = transparent
+a = #101a08
+b = #c8e070
+c = #1e2e1080
+
+aaaaaaaaaaaaaaaa
+a..............a
+a.b..........b.a
+a..c........c..a
+a...c......c...a
+a....c....c....a
+a.....c..c.....a
+a......cc......a
+a......cc......a
+a.....c..c.....a
+a....c....c....a
+a...c......c...a
+a..c........c..a
+a.b..........b.a
+a..............a
+aaaaaaaaaaaaaaaa

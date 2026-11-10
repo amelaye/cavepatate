@@ -1,0 +1,24 @@
+1: Minetest Game API
+19: Bucket API
+41: Beds API
+79: Bones API
+89: Creative API
+116: Chests API
+167: Doors API
+278: Dungeon Loot API
+312: Fence API
+341: Walls API
+360: Farming API
+405: Fire API
+425: Give Initial Stuff API
+457: Player API
+537: TNT API
+623: Screwdriver API
+642: Sethome API
+664: Spawn API
+693: Sfinv API
+802: Stairs API
+874: Xpanes API
+1133: Key API
+1200: Log API
+1231: Weather API

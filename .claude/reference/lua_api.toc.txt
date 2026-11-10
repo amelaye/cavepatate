@@ -1,0 +1,466 @@
+1: # Luanti Lua Modding API Reference
+16: ## Introduction
+31: ## Programming in Lua
+37: ## Startup
+43: ## Paths
+57: ## Numbers and integers
+127: ### Implementation details
+138: # Games
+212: ## Menu images
+224: ## Menu music
+237: # Mods
+240: ## Mod load path
+249: ## World-specific games
+260: ## Modpacks
+278: ## Mod directory structure
+302: ### modname
+307: ### mod.conf
+326: ### `screenshot.{png,jpg,jpeg}`
+331: ### `depends.txt`
+345: ### `description.txt`
+353: ### `settingtypes.txt`
+362: ### `init.lua`
+368: ### `textures`, `sounds`, `media`, `models`, `locale`, `fonts`
+407: #### glTF
+455: #### Custom fonts
+481: ## Naming conventions
+500: ### Example
+515: # Aliases
+539: ## Mapgen aliases
+547: ### Aliases for non-V6 mapgens
+549: #### Essential aliases
+559: #### Optional aliases
+571: ### Aliases for Mapgen V6
+573: #### Essential
+588: #### Optional
+608: ### Setting the node used in Mapgen Singlenode
+617: # Textures
+620: ## Introduction
+645: ## Loading order
+661: ## Texture modifiers
+669: ### Notes
+674: ### Texture overlaying
+691: ### Texture grouping
+700: ### Escaping
+712: ### Advanced texture modifiers
+714: #### Crack
+762: #### `[combine:<w>x<h>:<parts>`
+780: #### `[resize:<w>x<h>`
+791: #### `[opacity:<ratio>`
+804: #### `[invert:<mode>`
+815: #### `[brighten`
+824: #### `[noalpha`
+836: #### `[makealpha:<r>,<g>,<b>`
+855: #### `[transform<t>`
+877: #### `[inventorycube{<top>{<left>{<right>`
+894: #### `[fill:<w>x<h>:<x>,<y>:<color>`
+918: #### `[lowpart:<percent>:<texture>`
+928: #### `[verticalframe:<t>:<n>`
+939: #### `[mask:<texture>`
+949: #### `[sheet:<w>x<h>:<x>,<y>`
+960: #### `[colorize:<color>:<ratio>`
+980: #### `[colorizehsl:<hue>:<saturation>:<lightness>`
+998: #### `[multiply:<color>`
+1012: #### `[screen:<color>`
+1024: #### `[hsl:<hue>:<saturation>:<lightness>`
+1041: #### `[contrast:<contrast>:<brightness>`
+1058: #### `[overlay:<file>`
+1067: #### `[hardlight:<file>`
+1084: #### `[png:<data>`
+1107: ## Hardware coloring
+1117: ### Static coloring
+1122: #### Global color
+1130: #### Tile color
+1138: ### Palettes
+1145: #### Palette indexing
+1175: #### Using palettes with items
+1184: #### Linking palettes with nodes
+1231: ### Conversion between nodes in the inventory and on the map
+1263: ### Colored items in craft recipes
+1284: ## Soft texture overlay
+1331: # Sounds
+1344: ## Sound group
+1362: ## `SimpleSoundSpec`
+1402: ## Sound parameter table
+1498: ## Special sound-groups
+1510: # Registered definitions
+1534: # Nodes
+1560: ## Node paramtypes
+1715: ## Node drawtypes
+1829: ## Node boxes
+1907: # Map terminology and coordinates
+1910: ## Nodes, mapblocks, mapchunks
+1929: ### Mapblock status
+1967: ## Coordinates
+1970: ### Orientation of axes
+1974: ### Node coordinates
+1978: ### Mapblock coordinates
+1985: #### Converting node position to the containing blockpos
+1992: #### Converting blockpos to min/max node positions
+2005: # HUD
+2008: ## HUD element types
+2061: ### `image`
+2075: ### `text`
+2099: ### `statbar`
+2117: ### `inventory`
+2131: ### `hotbar`
+2137: ### `waypoint`
+2156: ### `image_waypoint`
+2171: ### `compass`
+2192: ### `minimap`
+2208: # Representations of simple things
+2211: ## Vector (ie. a position)
+2220: ## `pointed_thing`
+2246: # Flag Specifier Format
+2291: # Items
+2299: ## Item types
+2326: ## Special Items
+2343: ## Amount and wear
+2356: ## Item formats
+2367: ### Serialized
+2407: ### Table format
+2429: ### `ItemStack` format
+2438: # Groups
+2446: ## Usage
+2473: ## Groups of items
+2478: ## Groups of nodes
+2484: ## Groups of entities
+2496: ## Groups of tool capabilities
+2502: ## Groups in crafting recipes
+2551: ## Special groups
+2558: ### Node and item groups
+2564: ### Node-only groups
+2615: ### Tool-only groups
+2621: ### `ObjectRef` armor groups
+2636: ## Known damage and digging time defining groups
+2654: ## Examples of custom groups
+2670: ## Digging time calculation specifics
+2690: # Tool Capabilities
+2704: ## Tool capabilities definition
+2718: ### Full punch interval `full_punch_interval`
+2724: ### Maximum drop level `max_drop_level`
+2732: ### Uses `uses` (tools only)
+2748: ### Maximum level `maxlevel`
+2753: ### Digging times `times`
+2770: ### Damage groups
+2774: ### Punch attack uses (tools only)
+2785: ## Example definition of the capabilities of an item
+2828: # Entity damage mechanism
+2872: # Metadata
+2875: ## Node Metadata
+2936: ## Item Metadata
+2995: # Formspec
+3042: ## Examples
+3045: ### Chest
+3051: ### Furnace
+3059: ### Minecraft-like player inventory
+3067: ## Formspec Version History
+3103: ## Elements
+3106: ### `formspec_version[<version>]`
+3116: ### `size[<W>,<H>,<fixed_size>]`
+3122: ### `position[<X>,<Y>]`
+3132: ### `anchor[<X>,<Y>]`
+3145: ### `padding[<X>,<Y>]`
+3155: ### `no_prepend[]`
+3161: ### `real_coordinates[<bool>]`
+3172: ### `allow_close[<bool>]`
+3179: ### `container[<X>,<Y>]`
+3187: ### `container_end[]`
+3192: ### `scroll_container[<X>,<Y>;<W>,<H>;<scrollbar name>;<orientation>;<scroll factor>;<content padding>]`
+3213: ### `scroll_container_end[]`
+3218: ### `list[<inventory location>;<list name>;<X>,<Y>;<W>,<H>;<starting item index>]`
+3235: ### `listring[<inventory location>;<list name>]`
+3243: ### `listring[]`
+3248: ### `listcolors[<slot_bg_normal>;<slot_bg_hover>]`
+3253: ### `listcolors[<slot_bg_normal>;<slot_bg_hover>;<slot_border>]`
+3259: ### `listcolors[<slot_bg_normal>;<slot_bg_hover>;<slot_border>;<tooltip_bgcolor>;<tooltip_fontcolor>]`
+3267: ### `listimages[<slot_bgimg_normal>;<slot_bgimg_hover>]`
+3278: ### `tooltip[<gui_element_name>;<tooltip_text>;<bgcolor>;<fontcolor>]`
+3285: ### `tooltip[<X>,<Y>;<W>,<H>;<tooltip_text>;<bgcolor>;<fontcolor>]`
+3291: ### `hypertip[<gui_element_name>;<staticPos>;<width>;<name>;<text>]`
+3303: ### `hypertip[<X>,<Y>;<W>,<H>;<staticPos>;<width>;<name>;<text>]`
+3310: ### `image[<X>,<Y>;<W>,<H>;<texture name>;<middle>]`
+3317: ### `animated_image[<X>,<Y>;<W>,<H>;<name>;<texture name>;<frame count>;<frame duration>;<frame start>;<middle>]`
+3330: ### `model[<X>,<Y>;<W>,<H>;<name>;<mesh>;<textures>;<rotation>;<continuous>;<mouse control>;<frame loop range>;<animation speed>]`
+3346: ### `item_image[<X>,<Y>;<W>,<H>;<item name>]`
+3350: ### `bgcolor[<bgcolor>;<fullscreen>;<fbgcolor>]`
+3364: ### `background[<X>,<Y>;<W>,<H>;<texture name>]`
+3369: ### `background[<X>,<Y>;<W>,<H>;<texture name>;<auto_clip>]`
+3376: ### `background9[<X>,<Y>;<W>,<H>;<texture name>;<auto_clip>;<middle>]`
+3390: ### `pwdfield[<X>,<Y>;<W>,<H>;<name>;<label>]`
+3401: ### `field[<X>,<Y>;<W>,<H>;<name>;<label>;<default>]`
+3416: ### `field[<name>;<label>;<default>]`
+3426: ### `field_enter_after_edit[<name>;<enter_after_edit>]`
+3435: ### `field_close_on_enter[<name>;<close_on_enter>]`
+3442: ### `textarea[<X>,<Y>;<W>,<H>;<name>;<label>;<default>]`
+3451: ### `label[<X>,<Y>;<label>]`
+3464: ### `label[<X>,<Y>;<W>,<H>;<label>]`
+3474: ### `hypertext[<X>,<Y>;<W>,<H>;<name>;<text>]`
+3481: ### `vertlabel[<X>,<Y>;<label>]`
+3487: ### `button[<X>,<Y>;<W>,<H>;<name>;<label>]`
+3494: ### `button_url[<X>,<Y>;<W>,<H>;<name>;<label>;<url>]`
+3504: ### `image_button[<X>,<Y>;<W>,<H>;<texture name>;<name>;<label>]`
+3510: ### `image_button[<X>,<Y>;<W>,<H>;<texture name>;<name>;<label>;<noclip>;<drawborder>;<pressed texture name>]`
+3518: ### `item_image_button[<X>,<Y>;<W>,<H>;<item name>;<name>;<label>]`
+3525: ### `button_exit[<X>,<Y>;<W>,<H>;<name>;<label>]`
+3530: ### `button_url_exit[<X>,<Y>;<W>,<H>;<name>;<label>;<url>]`
+3535: ### `image_button_exit[<X>,<Y>;<W>,<H>;<texture name>;<name>;<label>]`
+3540: ### `textlist[<X>,<Y>;<W>,<H>;<name>;<listelem 1>,<listelem 2>,...,<listelem n>]`
+3549: ### `textlist[<X>,<Y>;<W>,<H>;<name>;<listelem 1>,<listelem 2>,...,<listelem n>;<selected idx>;<transparent>]`
+3560: ### `tabheader[<X>,<Y>;<name>;<caption 1>,<caption 2>,...,<caption n>;<current_tab>;<transparent>;<draw_border>]`
+3571: ### `tabheader[<X>,<Y>;<H>;<name>;<caption 1>,<caption 2>,...,<caption n>;<current_tab>;<transparent>;<draw_border>]`
+3584: ### `tabheader[<X>,<Y>;<W>,<H>;<name>;<caption 1>,<caption 2>,...,<caption n>;<current_tab>;<transparent>;<draw_border>]`
+3597: ### `box[<X>,<Y>;<W>,<H>;<color>]`
+3605: ### `dropdown[<X>,<Y>;<W>;<name>;<item 1>,<item 2>, ...,<item n>;<selected idx>;<index event>]`
+3621: ### `dropdown[<X>,<Y>;<W>,<H>;<name>;<item 1>,<item 2>, ...,<item n>;<selected idx>;<index event>]`
+3639: ### `checkbox[<X>,<Y>;<name>;<label>;<selected>]`
+3648: ### `scrollbar[<X>,<Y>;<W>,<H>;<orientation>;<name>;<value>]`
+3659: ### `scrollbaroptions[opt1;opt2;...]`
+3684: ### `table[<X>,<Y>;<W>,<H>;<name>;<cell 1>,<cell 2>,...,<cell n>;<selected idx>]`
+3693: ### `tableoptions[<opt 1>;<opt 2>;...]`
+3710: ### `tablecolumns[<type 1>,<opt 1a>,<opt 1b>,...;<type 2>,<opt 2a>,<opt 2b>;...]`
+3743: ### `style[<selector 1>,<selector 2>,...;<prop1>;<prop2>;...]`
+3756: ### `style_type[<selector 1>,<selector 2>,...;<prop1>;<prop2>;...]`
+3768: ### `set_focus[<name>;<force>]`
+3790: ## Migrating to Real Coordinates
+3825: ## Styling Formspecs
+3865: ### Supported Element Types
+3892: ### Valid Properties
+4015: ### Valid States
+4024: ## Markup Language
+4138: # Inventory
+4141: ## Inventory locations
+4150: ## Player Inventory lists
+4165: ## ItemStack transaction order
+4178: # Colors
+4181: ## `ColorString`
+4197: ## `ColorSpec`
+4213: # Escape sequences
+4243: # Coordinate System
+4271: # Vectors
+4281: ## Common to all vector types
+4284: ### Special properties
+4309: ### Operators
+4328: ### Common functions
+4417: # Spatial Vectors
+4437: ## Compatibility notes
+4457: ## Special properties of the class
+4463: ## Functions
+4494: ## Operators
+4499: ## Rotation-related functions
+4521: ## Further helpers
+4536: # 2D Vectors
+4547: ## Compatibility notes
+4557: ## Special properties of the class
+4563: ## Functions
+4600: ## Operators
+4607: # Helper functions
+4745: # Translations
+4751: ## Translating a string
+4843: ## Creating and updating translation files
+4880: ## Operations on translated strings
+4892: ## Old translation file format
+4919: ## Gettext translation file format
+4936: ## Monolingual Translations (Non-English Source Locale)
+4963: ## Escapes
+4981: ## Server side translations
+4999: ## Translating content meta
+5006: ### Mods and Texture Packs
+5022: ### Games and Modpacks
+5039: # Fractal value noise
+5051: ## Structure of fractal value noise
+5075: ## Noise Parameters
+5080: ### `offset`
+5086: ### `scale`
+5091: ### `spread`
+5104: ### `seed`
+5119: ### `octaves`
+5135: ### `persistence`
+5151: ### `lacunarity`
+5161: ### `flags`
+5166: #### `defaults`
+5171: #### `eased`
+5182: #### `absvalue`
+5195: ### Format example
+5218: # Ores
+5221: ## Ore types
+5228: ### `scatter`
+5236: ### `sheet`
+5258: ### `puff`
+5269: ### `blob`
+5275: ### `vein`
+5308: ### `stratum`
+5338: ## Ore attributes
+5346: ### `puff_cliffs`
+5352: ### `puff_additive_composition`
+5363: # Decoration types
+5368: ## `simple`
+5378: ## `schematic`
+5386: ## `lsystem`
+5395: # Schematics
+5398: ## Schematic specifier
+5433: ## Schematic attributes
+5450: # Lua Voxel Manipulator
+5453: ## About VoxelManip
+5479: ## Using VoxelManip
+5533: ### Flat array format
+5566: ### Content IDs
+5584: ### Mapgen VoxelManip objects
+5613: ### Other API functions operating on a VoxelManip
+5630: ### Notes
+5660: ## Methods
+5749: ## `VoxelArea`
+5759: ### Methods
+5788: ### Y stride and z stride of a flat array
+5813: # Mapgen objects
+5825: ### `voxelmanip`
+5830: ### `heightmap`
+5835: ### `biomemap`
+5840: ### `heatmap`
+5845: ### `humiditymap`
+5850: ### `gennotify`
+5883: # Registered entities
+5975: # L-system trees
+5978: ## Tree definition
+6007: ## Key for special L-System symbols used in axioms
+6032: ## Example
+6056: # Privileges
+6064: ## Registering privileges
+6073: ## Checking privileges
+6082: ## Managing player privileges
+6092: ## Built-in privileges
+6132: ## Related settings
+6142: # 'core' namespace reference
+6145: ## Utilities
+6511: ## Logging
+6521: ## Registration functions
+6526: ### Environment
+6599: ### Gameplay
+6629: ## Global callback registration functions
+6872: ## Setting-related
+6880: ## Authentication
+6948: ## Chat
+6961: ## Environment access
+7380: ## Mod channels
+7391: ## Inventory
+7431: ## Formspec functions
+7490: ## Item handling
+7626: ## Rollback
+7638: ## Defaults for the `on_place` and `on_drop` item definition functions
+7684: ## Defaults for the `on_punch` and `on_dig` node definition callbacks
+7693: ## Sounds
+7715: ## Timing
+7731: ## Async environment
+7762: ### List of APIs available in an async environment
+7800: ## Mapgen environment
+7820: ### List of APIs exclusive to the mapgen env
+7844: ### List of APIs available in the mapgen env
+7885: ## Server
+7949: ## IPC
+7995: ## Bans
+8014: ## Particles
+8040: ## Schematics
+8135: ## HTTP Requests
+8159: ## Storage API
+8166: ## Misc.
+8441: ## Global objects
+8452: ## Global tables
+8455: ### Registered definition tables
+8502: ### Registered callback tables
+8543: # Class reference
+8548: ## `AreaStore`
+8559: ### Methods
+8624: ## `AsyncJob`
+8628: ### Methods
+8633: ## `InvRef`
+8638: ### Methods
+8678: ### Callbacks
+8682: #### Before
+8690: #### After
+8698: #### Swapping
+8703: ## `ItemStack`
+8716: ### Methods
+8790: ### Operators
+8800: ## `ItemStackMetaRef`
+8806: ### Methods
+8818: ## `MetaDataRef`
+8829: ### Methods
+8867: ### Metadata tables
+8910: ## `ModChannel`
+8915: ### Methods
+8929: ## `NodeMetaRef`
+8935: ### Methods
+8945: ## `NodeTimerRef`
+8951: ### Methods
+8972: ## `ObjectRef`
+8978: ### Advice on handling `ObjectRefs`
+8996: ### Attachments
+9012: ### Methods
+9260: #### Lua entity only (no-op for other objects)
+9314: #### Player only (no-op for other objects)
+9819: ## `PcgRandom`
+9830: ### Methods
+9843: ## `PlayerMetaRef`
+9851: ### Methods
+9855: ## `PseudoRandom`
+9869: ### Methods
+9878: ## `Raycast`
+9906: ### Limitations
+9922: ### Methods
+9927: ## `SecureRandom`
+9935: ### Methods
+9940: ## `Settings`
+9954: ### Methods
+9996: ### Format
+10007: ## `StorageRef`
+10016: ### Methods
+10020: ## `ValueNoise`
+10039: ### Methods
+10044: ## `ValueNoiseMap`
+10068: ### Methods
+10102: # Definition tables
+10105: ## Object properties
+10320: ## Entity definition
+10358: ## ABM (ActiveBlockModifier) definition
+10418: ## LBM (LoadingBlockModifier) definition
+10490: ## Tile definition
+10512: ## Tile animation definition
+10545: ## Item image definition
+10552: ## Item definition
+10802: ## Node definition
+11285: ## Wear Bar Color
+11293: ### Wear bar colors definition
+11295: #### Syntax
+11310: #### Blend mode `blend`
+11315: #### Color stops `color_stops`
+11321: #### Shortcut usage
+11325: ## Crafting recipes
+11350: ### Shaped
+11398: #### Examples
+11490: ### Shapeless
+11505: #### Example
+11521: ### Tool repair
+11546: ### Cooking
+11571: #### Example
+11584: ### Fuel
+11608: #### Examples
+11632: ## Ore definition
+11748: ## Biome definition
+11852: ## Decoration definition
+12026: ## `PlayerHPChangeReason` table definition
+12060: ## Chat command definition
+12117: ## Privilege definition
+12150: ## Detached inventory callbacks
+12180: ## HUD Definition
+12235: ## Particle definition
+12317: ## `ParticleSpawner` definition
+12428: ### Modern definition fields
+12536: #### List of particlespawner properties
+12634: ### Textures
+12732: #### List of animatable texture properties
+12753: ## `HTTPRequest` definition
+12796: ## `HTTPRequestResult` definition
+12824: ## Authentication handler definition
+12868: ## Bit Library
+12875: ## Tracy Profiler
+12885: ## Error Handling

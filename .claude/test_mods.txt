@@ -1,0 +1,5 @@
+# Mods supplémentaires à activer pour les tests (un nom de mod par ligne).
+# Ils doivent être installés dans ~/Library/Application Support/minetest/mods/.
+# Les mods de Minetest Game (default, farming MTG…) sont chargés automatiquement.
+# Exemple, pour Farming Redo (qui remplace le farming de MTG et apporte les patates) :
+# farming

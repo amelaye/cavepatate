@@ -1,0 +1,142 @@
+# textdomain: cavepatate
+
+### src/blocks.lua ###
+Block of Potatoes=Bloc de patates
+Potato Flesh=Chair de patate
+Blighted Potato Block=Bloc de patate vénéneuse
+Compressed Blighted Potato Block=Bloc de patate vénéneuse compressé
+Double Compressed Blighted Potato Block=Bloc de patate vénéneuse doublement compressé
+Triple Compressed Blighted Potato Block=Bloc de patate vénéneuse triplement compressé
+Quadruple Compressed Blighted Potato Block=Bloc de patate vénéneuse quadruplement compressé
+Blighted Mashed Potato=Purée vénéneuse
+Blighted Potato Head=Tête de patate vénéneuse
+White Peel Block=Bloc de pelures blanc
+Grey Peel Block=Bloc de pelures gris
+Dark Grey Peel Block=Bloc de pelures gris foncé
+Black Peel Block=Bloc de pelures noir
+Violet Peel Block=Bloc de pelures violet
+Blue Peel Block=Bloc de pelures bleu
+Cyan Peel Block=Bloc de pelures cyan
+Dark Green Peel Block=Bloc de pelures vert foncé
+Green Peel Block=Bloc de pelures vert
+Yellow Peel Block=Bloc de pelures jaune
+Brown Peel Block=Bloc de pelures marron
+Orange Peel Block=Bloc de pelures orange
+Red Peel Block=Bloc de pelures rouge
+Magenta Peel Block=Bloc de pelures magenta
+Pink Peel Block=Bloc de pelures rose
+Peel Block=Bloc de pelures
+Corrupted Peel Block=Bloc de pelures corrompues
+Baked Potato Bricks=Briques de patate cuite
+Charred Potato Bricks=Briques de patate calcinée
+Stale Potato Bricks=Briques de patate rassie
+Starch Cloud=Nuage de fécule
+
+### src/commands.lua ###
+Show the nearest potato cave ("goto": teleport to it)=Affiche la cave à patates la plus proche (« goto » : s'y téléporter)
+You must be in game.=Vous devez être en jeu.
+No potato cave nearby.=Aucune cave à patates à proximité.
+Teleported to the potato cave at @1.=Téléporté dans la cave à patates en @1.
+You are inside the potato cave centered at @1.=Vous êtes dans la cave à patates centrée en @1.
+Nearest potato cave: @1 (@2 nodes away).=Cave à patates la plus proche : @1 (à @2 blocs).
+
+### src/items.lua ###
+Blighted Potato=Patate vénéneuse
+Blighted Potato Slice=Tranche de patate vénéneuse
+Potato Peel=Pelure de patate
+Raw Potato Sticks=Bâtonnets de patate crus
+Fries=Frites
+Hash Brown=Galette de pelures
+Potato Oil=Huile de patate
+Toxic Potato Oil=Huile de patate toxique
+Toxic Sap=Sève toxique
+
+### src/machines.lua ###
+Fryer=Friteuse
+Potato Slicer=Trancheuse à patates
+Potato Refinery=Raffinerie à patates
+Potato Battery=Pile à patates
+Pedestal=Piédestal
+Floating Tuber=Tubercule flottant
+
+### src/nodes.lua ###
+Tuberstone=Roche-tubercule
+Tuberstone Rubble=Moellon de tubercule
+Tuberstone Bricks=Briques de tubercule
+Blighted Tuberstone=Roche-tubercule flétrie
+Starchstone=Roche d'amidon
+Coal Ore in Tuberstone=Minerai de charbon (roche-tubercule)
+Iron Ore in Tuberstone=Minerai de fer (roche-tubercule)
+Copper Ore in Tuberstone=Minerai de cuivre (roche-tubercule)
+Tin Ore in Tuberstone=Minerai d'étain (roche-tubercule)
+Gold Ore in Tuberstone=Minerai d'or (roche-tubercule)
+Mese Ore in Tuberstone=Minerai de mese (roche-tubercule)
+Diamond Ore in Tuberstone=Minerai de diamant (roche-tubercule)
+Blighted Potato Ore=Minerai de patate vénéneuse
+Toxic Sap Ore=Minerai de sève toxique
+Tuber Soil=Terre de tubercule
+Peel Turf=Tourbe de pelures
+Blighted Peel Turf=Tourbe de pelures flétrie
+Tuber Farmland=Terre de tubercule labourée
+Wet Tuber Farmland=Terre de tubercule labourée humide
+Tuber Path=Sentier de tubercule
+Potato Gratings=Râpure de patate
+Peel Carpet=Tapis de pelures
+Tuber Spike=Pointe de tubercule
+Tuber Flower=Fleur de tubercule
+Glowing Sprout=Germe luisant
+Weak Root=Racine faible
+Strong Root=Racine robuste
+Mighty Potato=Patate vigoureuse
+Cave Light=Lumière de cave
+Loot Marker=Marqueur de butin
+
+### src/shapes.lua ###
+Tuberstone Stair=Escalier en roche-tubercule
+Tuberstone Slab=Dalle en roche-tubercule
+Inner Tuberstone Stair=Escalier intérieur en roche-tubercule
+Outer Tuberstone Stair=Escalier extérieur en roche-tubercule
+Tuberstone Brick Stair=Escalier en briques de tubercule
+Tuberstone Brick Slab=Dalle en briques de tubercule
+Inner Tuberstone Brick Stair=Escalier intérieur en briques de tubercule
+Outer Tuberstone Brick Stair=Escalier extérieur en briques de tubercule
+Starchstone Stair=Escalier en roche d'amidon
+Starchstone Slab=Dalle en roche d'amidon
+Inner Starchstone Stair=Escalier intérieur en roche d'amidon
+Outer Starchstone Stair=Escalier extérieur en roche d'amidon
+Baked Potato Brick Stair=Escalier en briques de patate cuite
+Baked Potato Brick Slab=Dalle en briques de patate cuite
+Inner Baked Potato Brick Stair=Escalier intérieur en briques de patate cuite
+Outer Baked Potato Brick Stair=Escalier extérieur en briques de patate cuite
+Charred Potato Brick Stair=Escalier en briques de patate calcinée
+Charred Potato Brick Slab=Dalle en briques de patate calcinée
+Inner Charred Potato Brick Stair=Escalier intérieur en briques de patate calcinée
+Outer Charred Potato Brick Stair=Escalier extérieur en briques de patate calcinée
+Stale Potato Brick Stair=Escalier en briques de patate rassie
+Stale Potato Brick Slab=Dalle en briques de patate rassie
+Inner Stale Potato Brick Stair=Escalier intérieur en briques de patate rassie
+Outer Stale Potato Brick Stair=Escalier extérieur en briques de patate rassie
+Tuber Planks=Planches de tubercule
+Tuber Plank Stair=Escalier en planches de tubercule
+Tuber Plank Slab=Dalle en planches de tubercule
+Inner Tuber Plank Stair=Escalier intérieur en planches de tubercule
+Outer Tuber Plank Stair=Escalier extérieur en planches de tubercule
+Tuberstone Wall=Muret en roche-tubercule
+Tuberstone Rubble Wall=Muret en moellons de tubercule
+Tuberstone Brick Wall=Muret en briques de tubercule
+Starchstone Wall=Muret en roche d'amidon
+Baked Potato Brick Wall=Muret en briques de patate cuite
+Charred Potato Brick Wall=Muret en briques de patate calcinée
+Stale Potato Brick Wall=Muret en briques de patate rassie
+
+### src/wood.lua ###
+Tuber Stem=Tige de tubercule
+Tuber Leaves=Feuillage de tubercule
+Tuber Fruit=Fruit de tubercule
+Tuber Sprout=Pousse de tubercule
+Tuber Pedicel=Pédicelle de tubercule
+Tuber Door=Porte en tubercule
+Tuber Trapdoor=Trappe en tubercule
+Tuber Fence Gate=Portillon en tubercule
+Tuber Fence=Barrière en tubercule
+Tuber Fence Rail=Rambarde en tubercule

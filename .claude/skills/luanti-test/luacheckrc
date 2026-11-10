@@ -1,0 +1,24 @@
+-- Config luacheck du mod cavepatate (utilisée via : luacheck --config .claude/skills/luanti-test/luacheckrc .)
+std = "luajit"
+max_line_length = 120
+exclude_files = { ".claude/**" }
+
+-- Seule globale écrite par le mod.
+globals = { "cavepatate" }
+
+read_globals = {
+	-- Moteur Luanti
+	"core", "minetest", "vector", "ItemStack", "VoxelArea", "VoxelManip",
+	"PseudoRandom", "PcgRandom", "SecureRandom", "PerlinNoise", "PerlinNoiseMap",
+	"ValueNoise", "ValueNoiseMap", "Settings", "AreaStore", "Raycast",
+	"dump", "dump2", "DIR_DELIM", "INIT", "PLATFORM",
+	table = { fields = { "copy", "copy_with_metatables", "indexof", "keyof", "insert_all",
+		"key_value_swap", "shuffle" } },
+	string = { fields = { "split", "trim" } },
+	math = { fields = { "hypot", "sign", "factorial", "round" } },
+	-- Minetest Game
+	"default", "farming", "stairs", "doors", "screwdriver", "sfinv", "creative", "dye",
+	"bucket", "xpanes", "walls", "beds", "fire", "tnt", "player_api", "dungeon_loot",
+	-- Mods tiers courants (compat optionnelle)
+	"hopper", "pipeworks", "mesecon", "unified_inventory", "i3", "mcl_formspec",
+}

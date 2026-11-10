@@ -1,0 +1,142 @@
+# textdomain: cavepatate
+
+### src/blocks.lua ###
+Block of Potatoes=
+Potato Flesh=
+Blighted Potato Block=
+Compressed Blighted Potato Block=
+Double Compressed Blighted Potato Block=
+Triple Compressed Blighted Potato Block=
+Quadruple Compressed Blighted Potato Block=
+Blighted Mashed Potato=
+Blighted Potato Head=
+White Peel Block=
+Grey Peel Block=
+Dark Grey Peel Block=
+Black Peel Block=
+Violet Peel Block=
+Blue Peel Block=
+Cyan Peel Block=
+Dark Green Peel Block=
+Green Peel Block=
+Yellow Peel Block=
+Brown Peel Block=
+Orange Peel Block=
+Red Peel Block=
+Magenta Peel Block=
+Pink Peel Block=
+Peel Block=
+Corrupted Peel Block=
+Baked Potato Bricks=
+Charred Potato Bricks=
+Stale Potato Bricks=
+Starch Cloud=
+
+### src/commands.lua ###
+Show the nearest potato cave ("goto": teleport to it)=
+You must be in game.=
+No potato cave nearby.=
+Teleported to the potato cave at @1.=
+You are inside the potato cave centered at @1.=
+Nearest potato cave: @1 (@2 nodes away).=
+
+### src/items.lua ###
+Blighted Potato=
+Blighted Potato Slice=
+Potato Peel=
+Raw Potato Sticks=
+Fries=
+Hash Brown=
+Potato Oil=
+Toxic Potato Oil=
+Toxic Sap=
+
+### src/machines.lua ###
+Fryer=
+Potato Slicer=
+Potato Refinery=
+Potato Battery=
+Pedestal=
+Floating Tuber=
+
+### src/nodes.lua ###
+Tuberstone=
+Tuberstone Rubble=
+Tuberstone Bricks=
+Blighted Tuberstone=
+Starchstone=
+Coal Ore in Tuberstone=
+Iron Ore in Tuberstone=
+Copper Ore in Tuberstone=
+Tin Ore in Tuberstone=
+Gold Ore in Tuberstone=
+Mese Ore in Tuberstone=
+Diamond Ore in Tuberstone=
+Blighted Potato Ore=
+Toxic Sap Ore=
+Tuber Soil=
+Peel Turf=
+Blighted Peel Turf=
+Tuber Farmland=
+Wet Tuber Farmland=
+Tuber Path=
+Potato Gratings=
+Peel Carpet=
+Tuber Spike=
+Tuber Flower=
+Glowing Sprout=
+Weak Root=
+Strong Root=
+Mighty Potato=
+Cave Light=
+Loot Marker=
+
+### src/shapes.lua ###
+Tuberstone Stair=
+Tuberstone Slab=
+Inner Tuberstone Stair=
+Outer Tuberstone Stair=
+Tuberstone Brick Stair=
+Tuberstone Brick Slab=
+Inner Tuberstone Brick Stair=
+Outer Tuberstone Brick Stair=
+Starchstone Stair=
+Starchstone Slab=
+Inner Starchstone Stair=
+Outer Starchstone Stair=
+Baked Potato Brick Stair=
+Baked Potato Brick Slab=
+Inner Baked Potato Brick Stair=
+Outer Baked Potato Brick Stair=
+Charred Potato Brick Stair=
+Charred Potato Brick Slab=
+Inner Charred Potato Brick Stair=
+Outer Charred Potato Brick Stair=
+Stale Potato Brick Stair=
+Stale Potato Brick Slab=
+Inner Stale Potato Brick Stair=
+Outer Stale Potato Brick Stair=
+Tuber Planks=
+Tuber Plank Stair=
+Tuber Plank Slab=
+Inner Tuber Plank Stair=
+Outer Tuber Plank Stair=
+Tuberstone Wall=
+Tuberstone Rubble Wall=
+Tuberstone Brick Wall=
+Starchstone Wall=
+Baked Potato Brick Wall=
+Charred Potato Brick Wall=
+Stale Potato Brick Wall=
+
+### src/wood.lua ###
+Tuber Stem=
+Tuber Leaves=
+Tuber Fruit=
+Tuber Sprout=
+Tuber Pedicel=
+Tuber Door=
+Tuber Trapdoor=
+Tuber Fence Gate=
+Tuber Fence=
+Tuber Fence Rail=
