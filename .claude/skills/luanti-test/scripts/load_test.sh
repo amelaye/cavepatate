@@ -21,7 +21,8 @@ find_luanti() {
 	for c in "$(command -v luanti 2>/dev/null)" \
 		"/Applications/Luanti.app/Contents/MacOS/luanti" \
 		"/Applications/luanti.app/Contents/MacOS/luanti" \
-		"$HOME/Downloads/luanti.app/Contents/MacOS/luanti"; do
+		"$HOME/Downloads/luanti.app/Contents/MacOS/luanti" \
+		"$MOD_DIR/../../bin/luanti.exe"; do # Windows, installation portable (mod dans <luanti>/mods/)
 		[ -n "$c" ] && [ -x "$c" ] && { echo "$c"; return; }
 	done
 }
@@ -70,8 +71,10 @@ PORT=$((30100 + RANDOM % 800))
 echo "Luanti : $("$LUANTI" --version 2>/dev/null | head -1)  |  jeu : $GAMEID  |  mod : $MODNAME"
 [ -f "$CLAUDE_DIR/test_mods.txt" ] && echo "Mods additionnels : $(grep -v '^[[:space:]]*#' "$CLAUDE_DIR/test_mods.txt" | tr -s '\n' ' ')"
 
+# --log-timestamp n'existe pas avant Luanti 5.18
+TS=(); "$LUANTI" --help 2>&1 | grep -q -- "--log-timestamp" && TS=(--log-timestamp none)
 "$LUANTI" --server --world "$WORLD" --gameid "$GAMEID" --config "$CONF" \
-	--port "$PORT" --logfile "$LOG" --log-timestamp none >"$WORK/console.txt" 2>&1 &
+	--port "$PORT" --logfile "$LOG" "${TS[@]}" >"$WORK/console.txt" 2>&1 &
 PID=$!
 
 # --- Attente du démarrage puis arrêt ----------------------------------------

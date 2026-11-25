@@ -6,7 +6,7 @@
 --     (tourbe de pelures, fleurs, potagers), Bosquet (arbres-tubercules), Flétrissure
 --     (tourbe flétrie, pointes, pelures corrompues) et Râpures (râpure de patate qui
 --     s'effondre, cactus de pelures, puits calcinés) ;
---   * les cuvettes sous le niveau d'eau sont noyées ; des sentiers traversent Champs
+--   * les cuvettes sous le niveau du lac sont noyées d'huile de friture ; des sentiers traversent Champs
 --     et Bosquet ;
 --   * une coque (1 <= d < SHELL) de roche-tubercule veinée de roche d'amidon, de
 --     patate et de minerais isole la cave ; au-delà, la pierre se contamine
@@ -20,6 +20,7 @@ local st = cavepatate.structures
 local FIELDS, GROVE, BLIGHT, HASH = cave.FIELDS, cave.GROVE, cave.BLIGHT, cave.HASH
 
 local c -- content IDs, initialisés au premier usage (tous les mods sont chargés)
+local foreign_liquid = {} -- content ID -> true pour les liquides qui ne sont pas du mod
 
 local function opt_id(node)
 	return core.registered_nodes[node] and core.get_content_id(node) or nil
@@ -30,7 +31,8 @@ local function init_ids()
 	local n = function(s) return id("cavepatate:" .. s) end
 	c = {
 		air = id("air"),
-		water = id("default:water_source"),
+		ignore = id("ignore"),
+		oil = n("frying_oil_source"),
 		stone = id("default:stone"),
 		desert_stone = id("default:desert_stone"),
 		tuberstone = n("tuberstone"),
@@ -80,6 +82,15 @@ local function init_ids()
 		dry_shrub = opt_id("default:dry_shrub"),
 		ladder = opt_id("default:ladder_wood"),
 		rail = opt_id("carts:rail"),
+		-- hameaux
+		glass = id("default:glass"),
+		fryer = n("fryer"),
+		slicer = n("potato_slicer"),
+		fence = opt_id("cavepatate:tuber_fence"),
+		gate = opt_id("cavepatate:tuber_fence_gate_closed"),
+		door = opt_id("cavepatate:tuber_door_a"),
+		door_b = opt_id("cavepatate:tuber_door_b"),
+		door_top = opt_id("doors:hidden"),
 	}
 	-- minerais de Minetest Game -> minerais en roche-tubercule
 	c.ore_map = {}
@@ -87,6 +98,12 @@ local function init_ids()
 		local a = opt_id(mtg)
 		if a then
 			c.ore_map[a] = id(ours)
+		end
+	end
+	-- liquides des autres mods et du jeu (eau, lave…), à retirer du creux des caves
+	for node, def in pairs(core.registered_nodes) do
+		if (def.liquidtype or "none") ~= "none" and node:sub(1, 11) ~= "cavepatate:" then
+			foreign_liquid[id(node)] = true
 		end
 	end
 end
@@ -143,7 +160,7 @@ local function carve(ctx, cav)
 	local ystride = area.ystride
 	local LIMIT, SHELL, INFECT, WARP = cave.LIMIT, cave.SHELL, cave.INFECT, cave.WARP
 	local wl = cav.water_level
-	local c_air, c_water, c_potato = c.air, c.water, c.potato_block
+	local c_air, c_oil, c_potato = c.air, c.oil, c.potato_block
 	local c_stone, c_desert, c_starch = c.stone, c.desert_stone, c.starchstone
 	local c_blight_ore, c_sap_ore, c_bpeel = c.blight_ore, c.sap_ore, c.blighted_peel_block
 	local ore_map = c.ore_map
@@ -200,7 +217,7 @@ local function carve(ctx, cav)
 									data[vi] = ore_map[data[vi]] or rock
 								end
 							elseif y <= wl then
-								data[vi] = c_water
+								data[vi] = c_oil
 							else
 								data[vi] = c_air
 								if phase then
@@ -297,7 +314,7 @@ local function floor_y(ctx, cav, x, z, ci)
 		return nil
 	end
 	local below = node_at(ctx, x, f, z)
-	if st.is_air(ctx, below) or below == c.water then
+	if st.is_air(ctx, below) or below == c.oil then
 		return nil
 	end
 	return y
@@ -315,7 +332,7 @@ local function ceiling_y(ctx, x, z, from)
 	for y = from, maxy - 1 do
 		local above = data[vi + ystride]
 		if above ~= c_air and above ~= c_light then
-			if above == c.water then
+			if above == c.oil then
 				return nil
 			end
 			return y
@@ -363,6 +380,15 @@ local function decorate(ctx, cav)
 		st.arena(ctx, site)
 	end
 
+	-- 1 bis. hameaux (chacun construit par le seul chunk qui le contient en entier)
+	local H = cave.HAMLET_HALF
+	for _, h in ipairs(cave.hamlet_sites(cav)) do
+		if h.x - H >= minp.x and h.x + H <= maxp.x and h.z - H >= minp.z and h.z + H <= maxp.z
+				and h.y - cave.HAMLET_BELOW >= minp.y and h.y + cave.HAMLET_ABOVE <= maxp.y then
+			st.hamlet(ctx, h)
+		end
+	end
+
 	-- 2. grandes structures du sol
 	for _ = 1, cave.FEATURES do
 		local x, z = pr:next(x0, x1), pr:next(z0, z1)
@@ -393,9 +419,19 @@ local function decorate(ctx, cav)
 		end
 	end
 
-	-- 4. petites décorations, colonne par colonne
+	-- 4. petites décorations, colonne par colonne (sauf dans les maisons, potagers et
+	-- places des hameaux)
 	local area = ctx.area
 	local irx2, irz2 = 1 / (cav.rx * cav.rx), 1 / (cav.rz * cav.rz)
+	local no_decor = ctx.no_decor
+	local function decor_ok(x, z)
+		for _, r in ipairs(no_decor or {}) do
+			if x >= r[1] and x <= r[3] and z >= r[2] and z <= r[4] then
+				return false
+			end
+		end
+		return true
+	end
 	for z = z0, z1 do
 		local dz2 = (z - cav.z) ^ 2 * irz2
 		for x = x0, x1 do
@@ -404,7 +440,7 @@ local function decorate(ctx, cav)
 			if f and (x - cav.x) ^ 2 * irx2 + dz2 < 1 then
 				local biome = col_biome[ci]
 				local y = floor_y(ctx, cav, x, z, ci)
-				if y and node_at(ctx, x, f, z) ~= c.tuber_path then
+				if y and node_at(ctx, x, f, z) ~= c.tuber_path and (not no_decor or decor_ok(x, z)) then
 					local r = pr:next(1, 1000)
 					for _, e in ipairs(FLOOR_DECOR[biome]) do
 						if r <= e[1] then
@@ -418,7 +454,8 @@ local function decorate(ctx, cav)
 					end
 				end
 				local from = max(minp.y, f + 2)
-				if from < maxp.y and ceiling_in_chunk(cav, x, z, maxp) then
+				-- (dans un bâtiment, le « plafond » trouvé serait son toit)
+				if from < maxp.y and ceiling_in_chunk(cav, x, z, maxp) and (not no_decor or decor_ok(x, z)) then
 					local yc = ceiling_y(ctx, x, z, from)
 					if yc then
 						local r = pr:next(1, 1000)
@@ -443,14 +480,147 @@ local function decorate(ctx, cav)
 	end
 end
 
+-- Écritures des autres mods au-delà des bords du chunk --------------------------------
+-- D'autres mods décorent les grottes d'un chunk pendant sa génération, et certains
+-- écrivent au-delà de ses bords, jusqu'à 16 nœuds dans les chunks voisins : caverealms
+-- (sous Y −1500) pose champignons géants, stalactites et vers luisants sans regarder ce
+-- qu'ils remplacent. Quand le voisin est une cave déjà générée, ces morceaux y flottent.
+-- Même méthode que paleocave : un premier rappel, placé avant ceux de tous les autres
+-- mods, garde une copie de la zone (keep_copy) ; le générateur remet ensuite ce qui a
+-- changé autour du chunk, dans la coque et le creux des caves (clean_edges). Ce que ces
+-- mods posent dans le chunk lui-même est creusé avec le reste : le générateur passe après
+-- eux (caverealms et everness en dépendances optionnelles dans mod.conf). Sinon,
+-- caverealms prendrait la roche du chunk voisin pas encore creusé pour un sol ou un
+-- plafond, et poserait ses décorations sur les faces du chunk, dans le vide.
+-- Limite : depuis Luanti 5.9, Everness travaille dans l'environnement mapgen
+-- (register_mapgen_script), donc avant keep_copy ; ses écritures au-delà du chunk ne
+-- sont pas remises (seuls ses liquides le sont, comme ceux du moteur, plus bas).
+
+local EDGE = 16 -- portée des écritures d'un chunk au-delà de ses bords
+local before, before_of = {}, nil
+
+-- Caves dont l'emprise touche le chunk ou ses bords, ou nil.
+local function caves_near(minp, maxp)
+	if maxp.y + EDGE < cave.YMIN or minp.y - EDGE > cave.YMAX then
+		return nil
+	end
+	local list = cave.caves_in(
+		{ x = minp.x - EDGE, y = minp.y - EDGE, z = minp.z - EDGE },
+		{ x = maxp.x + EDGE, y = maxp.y + EDGE, z = maxp.z + EDGE })
+	return #list > 0 and list or nil
+end
+
+local function keep_copy(minp, maxp)
+	before_of = nil
+	if caves_near(minp, maxp) then
+		local vm = core.get_mapgen_object("voxelmanip")
+		vm:get_data(before)
+		before_of = { x = minp.x, y = minp.y, z = minp.z }
+	end
+end
+
+-- Le moteur, lui, passe avant keep_copy : ses grandes grottes inondées, générées dans un
+-- chunk voisin, débordent d'eau ou de lave dans l'air d'une cave déjà creusée. Tout
+-- liquide étranger trouvé autour du chunk, dans le creux de la cave, est donc retiré.
+local get_noise = core.get_value_noise or core.get_perlin
+local n_warp
+local wpos = { x = 0, y = 0, z = 0 }
+
+-- Vrai si la distance déformée de (x, y, z) est sous `limit` (1 : creux, cave.SHELL :
+-- coque comprise) ; d0 : distance normalisée sans déformation. Le bruit n'est lu qu'à
+-- proximité de la limite.
+local function warped_below(x, y, z, d0, limit)
+	local margin = 2 * cave.WARP
+	if d0 < limit - margin then
+		return true
+	elseif d0 >= limit + margin then
+		return false
+	end
+	n_warp = n_warp or get_noise(cave.np_warp)
+	wpos.x, wpos.y, wpos.z = x, y, z
+	return d0 + cave.WARP * n_warp:get_3d(wpos) < limit
+end
+
+-- Vrai si (x, y, z) est dans le creux de la cave (air ou lac), au-dessus du sol.
+local function in_hollow(cav, x, y, z, d0)
+	return d0 < 1 + 2 * cave.WARP and y > cave.floor_at(cav, x, z) and warped_below(x, y, z, d0, 1)
+end
+
+-- Autour du chunk (entre minp..maxp et emin..emax), dans l'emprise de `cav` : remet les
+-- cellules de la coque et du creux qu'un autre mod a changées depuis keep_copy (si
+-- `copy` ; au-delà, dans la pierre contaminée, ses décorations de grottes sont légitimes),
+-- puis retire les liquides étrangers du creux. Les cellules des chunks pas encore générés
+-- (« ignore » dans la copie) sont laissées : ces chunks creuseront leur cave eux-mêmes.
+-- Limites connues : param2 n'est pas remis (caverealms n'en écrit pas), et un liquide
+-- posé par un joueur dans le creux, à moins de 16 nœuds d'un chunk pas encore généré,
+-- disparaît à la génération de ce chunk.
+local function clean_edges(cav, minp, maxp, emin, emax, area, copy)
+	local x0, x1 = max(emin.x, cav.x - cav.ext.x), min(emax.x, cav.x + cav.ext.x)
+	local y0, y1 = max(emin.y, cav.y - cav.ext.y), min(emax.y, cav.y + cav.ext.y)
+	local z0, z1 = max(emin.z, cav.z - cav.ext.z), min(emax.z, cav.z + cav.ext.z)
+	local irx2, iry2, irz2 = 1 / (cav.rx * cav.rx), 1 / (cav.ry * cav.ry), 1 / (cav.rz * cav.rz)
+	local LIMIT, SHELL, c_ignore, c_air, c_oil, cx = cave.LIMIT, cave.SHELL, c.ignore, c.air, c.oil, cav.x
+	local wl = cav.water_level
+	local changed = false
+	local function row(y, z, dyz, from, to)
+		local vi = area:index(from, y, z)
+		for x = from, to do
+			local cid = data[vi]
+			if copy then
+				local old = before[vi]
+				if cid ~= old and old ~= c_ignore and warped_below(x, y, z, (x - cx) ^ 2 * irx2 + dyz, SHELL) then
+					data[vi], cid = old, old
+					changed = true
+				end
+			end
+			if foreign_liquid[cid] and in_hollow(cav, x, y, z, (x - cx) ^ 2 * irx2 + dyz) then
+				data[vi] = y <= wl and c_oil or c_air
+				changed = true
+			end
+			vi = vi + 1
+		end
+	end
+	for z = z0, z1 do
+		local dz2 = (z - cav.z) ^ 2 * irz2
+		local in_z = z >= minp.z and z <= maxp.z
+		for y = y0, y1 do
+			local dyz = (y - cav.y) ^ 2 * iry2 + dz2
+			if dyz < LIMIT then
+				if in_z and y >= minp.y and y <= maxp.y then
+					-- seulement les parties de la rangée hors du chunk
+					row(y, z, dyz, x0, min(x1, minp.x - 1))
+					row(y, z, dyz, max(x0, maxp.x + 1), x1)
+				else
+					row(y, z, dyz, x0, x1)
+				end
+			end
+		end
+	end
+	return changed
+end
+
+-- keep_copy en tête des rappels. Avec le profileur, le rappel enregistré est une
+-- enveloppe : on déplace donc le dernier élément ajouté, quel qu'il soit.
+do
+	local callbacks = core.registered_on_generateds
+	local n = type(callbacks) == "table" and #callbacks
+	core.register_on_generated(keep_copy)
+	if n and #callbacks == n + 1 then
+		table.insert(callbacks, 1, table.remove(callbacks))
+	end
+end
+
 -- Branchement ------------------------------------------------------------------------
 
+local function touches(cav, minp, maxp)
+	return maxp.x >= cav.x - cav.ext.x and minp.x <= cav.x + cav.ext.x
+		and maxp.y >= cav.y - cav.ext.y and minp.y <= cav.y + cav.ext.y
+		and maxp.z >= cav.z - cav.ext.z and minp.z <= cav.z + cav.ext.z
+end
+
 core.register_on_generated(function(minp, maxp, blockseed)
-	if maxp.y < cave.YMIN or minp.y > cave.YMAX then
-		return
-	end
-	local caves = cave.caves_in(minp, maxp)
-	if #caves == 0 then
+	local near = caves_near(minp, maxp)
+	if not near then
 		return
 	end
 	if not c then
@@ -463,42 +633,65 @@ core.register_on_generated(function(minp, maxp, blockseed)
 	local t0 = core.get_us_time()
 	local vm, emin, emax = core.get_mapgen_object("voxelmanip")
 	vm:get_data(data)
-	vm:get_param2_data(p2data)
-	local sx, sy, sz = maxp.x - minp.x + 1, maxp.y - minp.y + 1, maxp.z - minp.z + 1
-	noise_maps(sx, sy, sz)
-	warp_map:get_3d_map_flat(minp, warp_buf)
-	vein_map:get_3d_map_flat(minp, vein_buf)
-
-	local ctx = {
-		data = data, p2 = p2data, minp = minp, maxp = maxp, sx = sx, sy = sy,
-		area = VoxelArea:new({ MinEdge = emin, MaxEdge = emax }),
-		pr = PcgRandom(blockseed), c = c, reserved = {},
-	}
+	local area = VoxelArea:new({ MinEdge = emin, MaxEdge = emax })
 	local changed = false
-	nspots = 0
-	for _, cav in ipairs(caves) do
-		ctx.cav = cav
-		for i = 1, sx * sz do
-			col_floor[i] = nil
-		end
-		if carve(ctx, cav) then
+
+	-- 1. ce que les autres mods et le moteur ont écrit dans les caves voisines
+	local copy = before_of and before_of.x == minp.x and before_of.y == minp.y and before_of.z == minp.z
+	for _, cav in ipairs(near) do
+		if clean_edges(cav, minp, maxp, emin, emax, area, copy) then
 			changed = true
-			decorate(ctx, cav)
 		end
 	end
-	if not changed then
+
+	-- 2. les caves du chunk lui-même
+	local caves = {}
+	for _, cav in ipairs(near) do
+		if touches(cav, minp, maxp) then
+			caves[#caves + 1] = cav
+		end
+	end
+	local carved = false
+	if #caves > 0 then
+		vm:get_param2_data(p2data)
+		local sx, sy, sz = maxp.x - minp.x + 1, maxp.y - minp.y + 1, maxp.z - minp.z + 1
+		noise_maps(sx, sy, sz)
+		warp_map:get_3d_map_flat(minp, warp_buf)
+		vein_map:get_3d_map_flat(minp, vein_buf)
+
+		local ctx = {
+			data = data, p2 = p2data, minp = minp, maxp = maxp, sx = sx, sy = sy,
+			area = area, pr = PcgRandom(blockseed), c = c, reserved = {},
+		}
+		nspots = 0
+		for _, cav in ipairs(caves) do
+			ctx.cav = cav
+			for i = 1, sx * sz do
+				col_floor[i] = nil
+			end
+			if carve(ctx, cav) then
+				carved = true
+				decorate(ctx, cav)
+			end
+		end
+		if carved then
+			-- lumière là où les structures ont laissé de l'air
+			local c_air, c_light = c.air, c.cave_light
+			for i = 1, nspots do
+				local vi = spots[i]
+				if data[vi] == c_air then
+					data[vi] = c_light
+				end
+			end
+		end
+	end
+	if not (changed or carved) then
 		return
 	end
-	-- lumière là où les structures ont laissé de l'air
-	local c_air, c_light = c.air, c.cave_light
-	for i = 1, nspots do
-		local vi = spots[i]
-		if data[vi] == c_air then
-			data[vi] = c_light
-		end
-	end
 	vm:set_data(data)
-	vm:set_param2_data(p2data)
+	if carved then
+		vm:set_param2_data(p2data)
+	end
 	vm:calc_lighting()
 	vm:write_to_map()
 	vm:update_liquids()

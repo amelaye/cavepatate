@@ -1,6 +1,6 @@
 # textdomain: cavepatate
 
-### src/blocks.lua ###
+### src\blocks.lua ###
 Block of Potatoes=
 Potato Flesh=
 Blighted Potato Block=
@@ -31,13 +31,13 @@ Baked Potato Bricks=
 Charred Potato Bricks=
 Stale Potato Bricks=
 
-### src/commands.lua ###
+### src\commands.lua ###
 Show the nearest potato cave=
 You must be in game to use this command.=
 No potato cave found nearby.=
 Nearest potato cave: @1=
 
-### src/items.lua ###
+### src\items.lua ###
 Blighted Potato=
 Blighted Potato Slice=
 Potato Peel=
@@ -48,7 +48,7 @@ Potato Oil=
 Toxic Potato Oil=
 Toxic Sap=
 
-### src/machines.lua ###
+### src\machines.lua ###
 Fryer=
 Potato Slicer=
 Potato Refinery=
@@ -56,7 +56,7 @@ Potato Battery=
 Pedestal=
 Floating Tuber=
 
-### src/nodes.lua ###
+### src\nodes.lua ###
 Tuberstone=
 Tuberstone Rubble=
 Tuberstone Bricks=
@@ -85,10 +85,13 @@ Glowing Sprout=
 Weak Root=
 Strong Root=
 Mighty Potato=
+Flowing Frying Oil=
+Frying Oil Source=
+Frying Oil Bucket=
 Cave Light=
 Loot Marker=
 
-### src/shapes.lua ###
+### src\shapes.lua ###
 Tuberstone Stair=
 Tuberstone Slab=
 Inner Tuberstone Stair=
@@ -126,7 +129,7 @@ Baked Potato Brick Wall=
 Charred Potato Brick Wall=
 Stale Potato Brick Wall=
 
-### src/wood.lua ###
+### src\wood.lua ###
 Tuber Stem=
 Tuber Leaves=
 Tuber Fruit=

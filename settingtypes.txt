@@ -1,10 +1,11 @@
 # Probability (0 to 1) that a world cell contains a potato cave.
-# Default: about 10 caves on a map from -10000 to 10000.
-cavepatate_cavity_chance (Potato cave chance) float 0.625 0 1
+# Default (1, with cells of 10000): exactly 4 caves on a map from -10000 to 10000, one per quarter.
+cavepatate_cavity_chance (Potato cave chance) float 1 0 1
 
 # Horizontal size of a world cell in nodes (one potato cave at most per cell).
-# The grid is offset by half a cell from the one of the Friandises mod.
-cavepatate_cavity_cell_size (Potato cave cell size) int 5000 600 20000
+# The grid starts at 0 (cells from 0 to size). A cave that would overlap a candy cavity of the
+# Friandises mod is moved elsewhere in its cell.
+cavepatate_cavity_cell_size (Potato cave cell size) int 10000 600 20000
 
 # Lowest Y of potato caves (the whole cave, shell included, stays between min and max Y).
 cavepatate_cavity_ymin (Potato cave min Y) int -5000 -30000 0
@@ -28,3 +29,8 @@ cavepatate_cavity_light (Potato cave light) int 14 0 14
 # Inside a potato cave, players see a light golden haze in the distance and slightly more vivid colours
 # (fog colour and saturation, restored when they leave). Saturation needs shaders on the client.
 cavepatate_cavity_ambience (Golden ambience in potato caves) bool true
+
+# Maximum number of hamlets (a church and three or four cottages around a small square)
+# in each potato cave. Every cave gets two or three of them (at least one), on its flattest,
+# driest ground.
+cavepatate_cavity_hamlets (Hamlets per potato cave) int 3 1 3

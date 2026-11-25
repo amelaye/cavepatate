@@ -18,24 +18,25 @@ Le dossier racine est le mod lui-même, tel qu'il sera installé dans `mods/cave
 ## Arborescence du mod
 
 ```
-mod.conf                  depends = default, farming · optional_depends = stairs, walls, doors, dye, vessels, moreblocks, friandises
+mod.conf                  depends = default, farming · optional_depends = stairs, walls, doors, dye, vessels, bucket, moreblocks, friandises, caverealms, everness
 init.lua                  namespace global `cavepatate` + chargement ordonné de src/*.lua (rien d'autre)
-settingtypes.txt          réglages serveur (cellule, chance, profondeur, alignement, structures, lumière, ambiance)
+settingtypes.txt          réglages serveur (cellule, chance, profondeur, alignement, structures, lumière, ambiance, hameaux)
 README.md                 présentation du mod (anglais)
 src/util.lua              util.name("x") -> "cavepatate:x", util.tex("x") -> "cavepatate_x.png", util.item_exists
 src/items.lua             objets (patate vénéneuse, pelures, frites, huiles, sève…) + cavepatate.eat_risky
-src/nodes.lua             roches, minerais, sols, végétation de cave, nœuds techniques (cave_light, loot)
+src/nodes.lua             roches, minerais, sols, végétation de cave, huile de friture (liquide des caves), nœuds techniques (cave_light, loot)
 src/blocks.lua            blocs de patate, compressions, purée, tête, pelures (16 couleurs), briques, nuage
 src/wood.lua              bois de tubercule : tige, planches, feuilles, pousse, fruit, pédicelle, porte, trappe, barrières
 src/machines.lua          friteuse, trancheuse, raffinerie, pile, piédestal, tubercule flottant
 src/shapes.lua            More Blocks (stairsplus) ou escaliers/dalles MTG, murets
 src/crafts.lua            recettes (ignorées si un ingrédient d'un autre mod manque)
-src/cave.lua              placement par cellules + fonctions pures : floor_at, biome_at, path_at, arena_site
+src/cave.lua              placement par cellules + fonctions pures : floor_at, biome_at, path_at, arena_site, hamlet_sites
 src/structures.lua        constructeurs procéduraux (jamais hors du chunk)
-src/mapgen.lua            on_generated : carve + decorate
+src/hamlets.lua           hameaux : repère local (Frame), formes (shape), chaumière, église, place, potagers, chemins
+src/mapgen.lua            on_generated : keep_copy + clean_edges (autres mods, liquides) + carve + decorate
 src/ambience.lua          brume dorée légère + saturation quand un joueur est dans une cave (rendues à la sortie)
 src/loot.lua              LBM : marqueurs -> coffres garnis
-src/commands.lua          /patate : coordonnées du centre de la cave la plus proche (privilège teleport, comme /candycave)
+src/commands.lua          /cavepatate : coordonnées du centre de la cave la plus proche (privilège teleport, comme /candycave)
 textures/                 cavepatate_<objet>[_<face>].png (16×16, originales ; sources dans .claude/textures_src/)
 locale/                   template.txt + cavepatate.fr.tr
 ```
@@ -47,6 +48,7 @@ locale/                   template.txt + cavepatate.fr.tr
 - Farming Redo : **à installer** dans `~/Library/Application Support/minetest/mods/farming`, puis ajouter `farming` dans `.claude/test_mods.txt`. Pour le test headless sans l'installer : `EXTRA_WORLDMODS=<chemin d'un clone> load_test.sh`
 - LuaJIT 2.1 présent · luacheck absent (`brew install luacheck` recommandé ; sinon fallback LuaJIT)
 - Python 3 (sans PIL) pour les scripts de textures et de traduction
+- **Windows** (installation portable `c:\luanti-5.14\luanti-5.14.0-win64`, mod dans `mods/cavepatate`) : Luanti **5.14**, Farming Redo, More Blocks, caverealms, everness… installés dans `mods/`. `load_test.sh` y trouve `bin/luanti.exe` ; passer les mods par `EXTRA_WORLDMODS` avec des chemins `/c/...` (le `:` de `c:/` sert de séparateur). Python 3.10 sous **`python`** (pas `python3`, qui ouvre le Microsoft Store) : `update_translations.py` et `pixelart.py` marchent. **Ni LuaJIT ni luacheck** : `lint.sh` est indisponible.
 
 ## Compatibilité
 

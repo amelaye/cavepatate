@@ -1,6 +1,6 @@
 # textdomain: cavepatate
 
-### src/blocks.lua ###
+### src\blocks.lua ###
 Block of Potatoes=Bloc de patates
 Potato Flesh=Chair de patate
 Blighted Potato Block=Bloc de patate vénéneuse
@@ -31,13 +31,13 @@ Baked Potato Bricks=Briques de patate cuite
 Charred Potato Bricks=Briques de patate calcinée
 Stale Potato Bricks=Briques de patate rassie
 
-### src/commands.lua ###
+### src\commands.lua ###
 Show the nearest potato cave=Affiche la cave à patates la plus proche
 You must be in game to use this command.=Vous devez être en jeu pour utiliser cette commande.
 No potato cave found nearby.=Aucune cave à patates à proximité.
 Nearest potato cave: @1=Cave à patates la plus proche : @1
 
-### src/items.lua ###
+### src\items.lua ###
 Blighted Potato=Patate vénéneuse
 Blighted Potato Slice=Tranche de patate vénéneuse
 Potato Peel=Pelure de patate
@@ -48,7 +48,7 @@ Potato Oil=Huile de patate
 Toxic Potato Oil=Huile de patate toxique
 Toxic Sap=Sève toxique
 
-### src/machines.lua ###
+### src\machines.lua ###
 Fryer=Friteuse
 Potato Slicer=Trancheuse à patates
 Potato Refinery=Raffinerie à patates
@@ -56,7 +56,7 @@ Potato Battery=Pile à patates
 Pedestal=Piédestal
 Floating Tuber=Tubercule flottant
 
-### src/nodes.lua ###
+### src\nodes.lua ###
 Tuberstone=Roche-tubercule
 Tuberstone Rubble=Moellon de tubercule
 Tuberstone Bricks=Briques de tubercule
@@ -85,10 +85,13 @@ Glowing Sprout=Germe luisant
 Weak Root=Racine faible
 Strong Root=Racine robuste
 Mighty Potato=Patate vigoureuse
+Flowing Frying Oil=Huile de friture qui coule
+Frying Oil Source=Source d'huile de friture
+Frying Oil Bucket=Seau d'huile de friture
 Cave Light=Lumière de cave
 Loot Marker=Marqueur de butin
 
-### src/shapes.lua ###
+### src\shapes.lua ###
 Tuberstone Stair=Escalier en roche-tubercule
 Tuberstone Slab=Dalle en roche-tubercule
 Inner Tuberstone Stair=Escalier intérieur en roche-tubercule
@@ -126,7 +129,7 @@ Baked Potato Brick Wall=Muret en briques de patate cuite
 Charred Potato Brick Wall=Muret en briques de patate calcinée
 Stale Potato Brick Wall=Muret en briques de patate rassie
 
-### src/wood.lua ###
+### src\wood.lua ###
 Tuber Stem=Tige de tubercule
 Tuber Leaves=Feuillage de tubercule
 Tuber Fruit=Fruit de tubercule

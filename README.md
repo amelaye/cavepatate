@@ -4,7 +4,7 @@ Mod for [Luanti](https://www.luanti.org) / Minetest Game that generates huge und
 
 ## What it generates
 
-Lens-shaped caverns about 240 to 400 nodes wide, with 100 to 120 nodes of open height, entirely between Y = -5000 and Y = -3000. The caves are **naturally bright**: an invisible light fills them evenly. Inside, the distance fades into a light golden haze and colours are slightly more vivid (restored when you leave).
+Lens-shaped caverns about 240 to 400 nodes wide, with 100 to 120 nodes of open height, entirely between Y = -5000 and Y = -3000. The caves are **naturally bright**: an invisible light fills them evenly. Inside, the distance fades into a light golden haze and colours are slightly more vivid (restored when you leave). With the default settings, a map from -10000 to 10000 holds exactly 4 caves, one per quarter.
 
 - A **tuberstone shell** veined with starchstone, potato and ores seals each cave. Minetest Game ores found there turn into tuberstone ores, alongside **blighted potato ore** and **toxic sap ore**.
 - Four areas:
@@ -12,7 +12,7 @@ Lens-shaped caverns about 240 to 400 nodes wide, with 100 to 120 nodes of open h
   - **Grove**: tuber trees with glowing fruits.
   - **Blight**: blighted peel turf, spike clusters, corrupted peel blocks and blighted mash pools.
   - **Gratings**: shredded potato that falls like sand, green peel "cacti" and charred wells.
-- Floor features: lakes, giant half-buried potatoes, stalagmites.
+- Floor features: lakes of **frying oil** (it replaces water in the caves: thick, slow to swim in, does not burn), giant half-buried potatoes, stalagmites.
 - Ceiling features: stalactites, potatoes hanging by their roots and mighty potatoes.
 - Ruins:
   - collapsed silos, sprout shrines and ruined arches;
@@ -21,8 +21,9 @@ Lens-shaped caverns about 240 to 400 nodes wide, with 100 to 120 nodes of open h
   - one **buried colosseum** per cave, in baked, stale and charred potato bricks.
 
   Silos, mineshafts and the colosseum hold chests.
+- **Hamlets**: every cave has two or three, on its flattest, driest ground (preferably in the Fields and the Grove). Each has a small square with a frying-oil basin around a monumental potato, and lamp posts, a **church** with a bell tower (pews, raised choir, altar, a rich chest), three or four furnished **brick cottages** (sloped roofs, door, windows, fryer or slicer, a chest), fenced vegetable gardens and paths. Roofs and furniture use More Blocks shapes when available, Minetest Game stairs and slabs otherwise.
 
-`/patate` (requires the `teleport` privilege) shows the coordinates of the nearest cave's centre.
+`/cavepatate` (requires the `teleport` privilege) shows the coordinates of the nearest cave's centre.
 
 ## Blocks and items
 
@@ -40,6 +41,7 @@ Lens-shaped caverns about 240 to 400 nodes wide, with 100 to 120 nodes of open h
   - **potato battery**: right-click toggles it; when on, it glows and shocks whoever stands on it;
   - **pedestal**;
   - **floating tuber**: right-click and it rises up to 32 nodes, carrying up to 8 blocks stacked on it;
+- **Liquid**: frying oil (source and flowing; a bucket of it with the `bucket` mod).
 - **Items**: blighted potato, blighted slice, potato peel, raw potato sticks, fries, hash brown, potato oil, toxic oil, toxic sap.
 
 Stone, bricks and planks come as stairs and slabs, or with **More Blocks** in every Stairs+ shape and on the circular saw. They also come as walls.
@@ -48,14 +50,15 @@ Stone, bricks and planks come as stairs and slabs, or with **More Blocks** in ev
 
 | Setting | Default | Effect |
 |---|---|---|
-| `cavepatate_cavity_chance` | 0.625 | Probability that a cell contains a cave |
-| `cavepatate_cavity_cell_size` | 5000 | Cell size in nodes (one cave at most per cell) |
+| `cavepatate_cavity_chance` | 1 | Probability that a cell contains a cave |
+| `cavepatate_cavity_cell_size` | 10000 | Cell size in nodes (one cave at most per cell). With the defaults, a map from -10000 to 10000 holds exactly 4 caves, one per quarter |
 | `cavepatate_cavity_ymin` / `ymax` | -5000 / -3000 | Depth range (the whole cave stays inside) |
 | `cavepatate_cavity_align` | true | Aligns each cave floor on map chunks so large structures fit |
 | `cavepatate_cavity_features` | 20 | Large feature attempts per map chunk, on the floor and on the ceiling |
 | `cavepatate_cavity_light` | 14 | Light level of the invisible light filling the caves (14 = brightest, 0 = only glowing plants and blocks) |
 | `cavepatate_cavity_ambience` | true | Light golden haze and slightly more vivid colours inside the caves |
+| `cavepatate_cavity_hamlets` | 3 | Maximum number of hamlets per cave (1 to 3; every cave has at least one) |
 
 ## Dependencies
 
-`default` and `farming` (made for [Farming Redo](https://codeberg.org/tenplus1/farming), which provides potatoes). Optional: `stairs`, `walls`, `doors`, `dye`, `vessels`, `moreblocks`, and `friandises` (potato caves never overlap its candy cavities). Requires Luanti 5.8 or later; tested with Luanti 5.18.
+`default` and `farming` (made for [Farming Redo](https://codeberg.org/tenplus1/farming), which provides potatoes). Optional: `stairs`, `walls`, `doors`, `dye`, `vessels`, `bucket`, `moreblocks`, `friandises` (potato caves never overlap its candy cavities), and `caverealms` / `everness` (generated before the caves, so that their cave decorations never float inside them). Requires Luanti 5.8 or later; tested with Luanti 5.18.

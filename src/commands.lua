@@ -1,8 +1,9 @@
--- /patate : coordonnées de la cave patate la plus proche (comme /candycave de Friandises).
+-- /cavepatate : coordonnées du centre de la cave patate la plus proche (comme /candycave de
+-- Friandises). Chaque cave a ses hameaux.
 
 local S = cavepatate.S
 
-core.register_chatcommand("patate", {
+core.register_chatcommand("cavepatate", {
 	description = S("Show the nearest potato cave"),
 	privs = { teleport = true },
 	func = function(name)

@@ -353,6 +353,61 @@ core.register_node(name("mighty_potato"), {
 	end,
 })
 
+-- Huile de friture --------------------------------------------------------------
+
+-- Remplace l'eau dans les caves : lacs, puits, rigoles des potagers. Froide, elle ne
+-- brûle pas ; épaisse, on y nage lentement et on peut s'y noyer. Elle ne se renouvelle
+-- pas et ne mouille pas les terres labourées. Textures : l'eau de Minetest Game teintée.
+local OIL_TINT = "^[colorize:#e8b032:185"
+
+local function oil_tile(file, length, culling)
+	return { name = file .. OIL_TINT, backface_culling = culling,
+		animation = { type = "vertical_frames", aspect_w = 16, aspect_h = 16, length = length } }
+end
+
+local function register_oil(kind)
+	local flowing = kind == "flowing"
+	core.register_node(name("frying_oil_" .. kind), {
+		description = flowing and S("Flowing Frying Oil") or S("Frying Oil Source"),
+		drawtype = flowing and "flowingliquid" or "liquid",
+		waving = 3,
+		tiles = flowing and { "default_water.png" .. OIL_TINT } or {
+			oil_tile("default_water_source_animated.png", 3.0, false),
+			oil_tile("default_water_source_animated.png", 3.0, true),
+		},
+		special_tiles = flowing and {
+			oil_tile("default_water_flowing_animated.png", 1.0, false),
+			oil_tile("default_water_flowing_animated.png", 1.0, true),
+		} or nil,
+		use_texture_alpha = "blend",
+		paramtype = "light",
+		paramtype2 = flowing and "flowingliquid" or nil,
+		walkable = false,
+		pointable = false,
+		diggable = false,
+		buildable_to = true,
+		is_ground_content = false,
+		drop = "",
+		drowning = 1,
+		liquidtype = kind,
+		liquid_alternative_flowing = name("frying_oil_flowing"),
+		liquid_alternative_source = name("frying_oil_source"),
+		liquid_viscosity = 4,
+		liquid_range = 4,
+		liquid_renewable = false,
+		post_effect_color = { a = 150, r = 196, g = 136, b = 28 },
+		groups = { liquid = 3, not_in_creative_inventory = flowing and 1 or nil },
+		sounds = default.node_sound_water_defaults(),
+	})
+end
+register_oil("source")
+register_oil("flowing")
+
+if rawget(_G, "bucket") and bucket.register_liquid then
+	bucket.register_liquid(name("frying_oil_source"), name("frying_oil_flowing"), name("bucket_frying_oil"),
+		"bucket_water.png^[colorize:#e8b032:150", S("Frying Oil Bucket"), { tool = 1 })
+end
+
 -- Nœuds techniques (générateur) -------------------------------------------------
 
 -- Lumière invisible qui rend la cave naturellement lumineuse.
@@ -361,6 +416,7 @@ core.register_node(name("cave_light"), {
 	drawtype = "airlike",
 	paramtype = "light",
 	sunlight_propagates = true,
+	is_ground_content = false,
 	walkable = false,
 	pointable = false,
 	diggable = false,
@@ -382,6 +438,7 @@ for _, kind in ipairs({ "loot", "loot_rich" }) do
 		paramtype = "light",
 		paramtype2 = "facedir",
 		sunlight_propagates = true,
+		is_ground_content = false,
 		walkable = false,
 		pointable = false,
 		diggable = false,

@@ -19,8 +19,9 @@ Architecture éprouvée, calquée sur le mod Friandises du même auteur (`~/Docu
 | Fichier | Rôle |
 |---|---|
 | `src/cave.lua` | réglages, bruits, `cave.get(cx, cz)`, `caves_in(minp, maxp)`, `find_nearest`, `floor_at`, `biome_at`, `path_at`, `arena_site`, `chunk_geometry`, évitement de Friandises |
-| `src/mapgen.lua` | `register_on_generated` (main env) : `carve` (creusement, matériaux par sous-biome `MATERIALS`, sentiers, eau, coque veinée, conversion des minerais MTG `c.ore_map`, contamination, repérage des points de lumière) puis `decorate` (arène, structures du sol et du plafond, nuages, petites décorations `FLOOR_DECOR`) ; lumière posée à la fin là où l'air est resté libre ; `cavepatate.content_ids()` exporte les IDs |
-| `src/structures.lua` | constructeurs `st.<nom>(ctx, x, y, z, blighted)` (24, tous testés) + `st.arena(ctx, site)` ; `st.tuber_tree` sert aussi à la pousse d'arbre (wood.lua) |
+| `src/mapgen.lua` | `register_on_generated` (main env) : `carve` (creusement, matériaux par sous-biome `MATERIALS`, sentiers, lacs (huile de friture), coque veinée, conversion des minerais MTG `c.ore_map`, contamination, repérage des points de lumière) puis `decorate` (arène, structures du sol et du plafond, nuages, petites décorations `FLOOR_DECOR`) ; lumière posée à la fin là où l'air est resté libre ; `cavepatate.content_ids()` exporte les IDs |
+| `src/structures.lua` | constructeurs `st.<nom>(ctx, x, y, z, blighted)` (24, tous testés) + `st.arena(ctx, site)` ; `st.tuber_tree` sert aussi à la pousse d'arbre (wood.lua) ; outils exposés sur `st` (`get`, `put`, `put_air`, `fits`, `reserve`, `chest_facedir`, `unevenness`) |
+| `src/hamlets.lua` | hameaux : `shape(forme, matériau)` (More Blocks → stairs MTG → bloc plein), repère local `Frame` (façade en lz = 0 vers -lz, rotation des positions et des facedir, formes retournées 20 + d), `settle` (fondation + dégagement), `st.cottage`, `st.church`, `st.hamlet(ctx, site)` ; zones `ctx.no_decor` sans petites décorations |
 | `src/loot.lua` | LBM marqueurs → `default:chest` garni |
 
 `ctx` = `{ data, p2, area, minp, maxp, sx, sy, pr, c (content IDs), cav, reserved }`. Les colonnes calculées par `carve` sont dans `col_floor/col_biome[(z-minp.z)*sx + (x-minp.x) + 1]`.
@@ -36,9 +37,13 @@ Architecture éprouvée, calquée sur le mod Friandises du même auteur (`~/Docu
 
 Structure unique par cave, comme l'arène : site calculé dans `cave.lua` à partir des seuls bruits, mis en cache dans `cav`, construit par le chunk qui contient le site en entier (y compris en Y).
 
+Ensemble de bâtiments (hameaux, `cave.hamlet_sites`) : même principe, le site est un centre de chunk et l'emprise de 64×64 tient dans ce chunk. La disposition est tirée par un `PcgRandom(site.seed)` propre au site. Chaque bâtiment est dessiné dans un repère local (`Frame`) puis tourné. Un bâtiment qui ne passe pas `fits` est omis, jamais coupé. Les critères de site trop stricts n'en laissent aucun (relief des collines ±7 et lacs dans les creux) : les vérifier sur plusieurs caves avec un diagnostic headless.
+
 ## 3. Pièges connus (vécus)
 
 - **`is_ground_content = false` sur tous les nœuds de la cave.** Sinon les grottes et cavernes de MTG du chunk voisin, générées plus tard, creusent la couche de recouvrement (1 nœud) à la jointure des chunks. Cela laisse une ligne d'air dans le sol et perce la coque.
+- **Mods qui décorent au-delà du chunk (caverealms).** caverealms pose champignons géants, stalactites et vers luisants sans regarder ce qu'ils remplacent, jusqu'à 16 nœuds dans les chunks voisins : dans une cave voisine déjà générée, ils flottent (constaté à une jointure de chunks). Parade reprise de paleocave (`mapgen.lua`) : `keep_copy`, placé en tête de `core.registered_on_generateds`, copie le VoxelManip avant les autres mods ; le générateur remet (`clean_edges`) les cellules changées depuis, hors du chunk et dans l'emprise des caves, sauf `ignore`. Le générateur passe **après** caverealms et everness (dépendances optionnelles). Sinon, caverealms prend la roche du voisin pas encore creusé pour un sol ou un plafond, et décore les faces du chunk dans le vide. Toute cave à moins de 16 nœuds du chunk (`caves_near`) déclenche ce traitement, même quand le chunk n'en touche aucune.
+- **Crues des grottes du moteur.** Une grande grotte inondée du moteur, générée dans un chunk voisin, déborde d'eau ou de lave dans l'air d'une cave déjà creusée (constaté : 21 nœuds d'eau qui coulaient à une jointure). Le moteur passe avant `keep_copy`, la copie ne suffit donc pas. `clean_edges` remplace aussi, autour du chunk, tout liquide étranger (`foreign_liquid`) situé dans le creux de la cave (`in_hollow` : au-dessus du sol, distance déformée < 1, warp par bruit ponctuel) : de l'air, ou de l'huile sous le niveau du lac.
 - Le mapgen ne peut ni remplir un inventaire ni poser de métadonnées utiles : marqueur + LBM `run_at_every_load = true`. Un LBM à `false` ne tourne jamais sur un bloc fraîchement généré.
 - `chunksize` peut être un vecteur (5.15+) : passer par `cave.chunk_geometry()`.
 - Bruits : `core.get_value_noise_map or core.get_perlin_map` et `core.get_value_noise or core.get_perlin` (renommés en 5.12). Les bruits ponctuels se créent **après** le chargement (graine du monde), donc paresseusement.
@@ -56,7 +61,7 @@ Mesure de référence : 100 à 420 ms par chunk de cave (moyenne 170 ms), enviro
 ## 5. Vérifier une modification
 
 1. `lint.sh` + `load_test.sh` (skill `luanti-test`) : chargement sans erreur.
-2. **Génération** : en jeu, nouveau monde (`/luanti-play --new --launch`), `/patate` puis `/teleport` aux coordonnées affichées. Ou, pour une vérification automatique, un outil **temporaire hors projet** (scratchpad) :
+2. **Génération** : en jeu, nouveau monde (`/luanti-play --new --launch`), `/cavepatate` puis `/teleport` aux coordonnées affichées. Ou, pour une vérification automatique, un outil **temporaire hors projet** (scratchpad) :
    - un mini-mod de test lié dans `worldmods/` d'un monde jetable (mapgen v7) ;
    - il appelle `cavepatate.cave.find_nearest`, `core.emerge_area` sur une coupe verticale et une tranche horizontale, lit les nœuds au VoxelManip, écrit des grilles texte, puis appelle `core.request_shutdown()` ;
    - les grilles sont converties en PNG avec `png_write` de `pixelart.py`, puis regardées.

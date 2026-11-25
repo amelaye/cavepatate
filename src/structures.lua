@@ -79,6 +79,9 @@ local function chest_facedir(fx, fz)
 	return core.dir_to_facedir({ x = -fx, y = 0, z = -fz })
 end
 
+-- Outils partagés avec les hameaux (hamlets.lua)
+st.get, st.put, st.fits, st.reserve = get, put, fits, reserve
+
 -- Brin de racines pendantes vers le bas depuis (x, y, z), sur `len` nœuds d'air.
 local function root_strand(ctx, x, y, z, len)
 	for i = 0, len - 1 do
@@ -216,7 +219,7 @@ local function surface_y(ctx, x, y, z, dir)
 		local yy = y + k
 		local support = get(ctx, x, yy - dir, z)
 		if is_air(ctx, get(ctx, x, yy, z)) and support and not is_air(ctx, support)
-				and support ~= ctx.c.water then
+				and support ~= ctx.c.oil then
 			return yy
 		end
 	end
@@ -295,7 +298,7 @@ function st.silo(ctx, x, y, z)
 			if d <= R + 0.5 then
 				for yy = y - 3, y - 2 do
 					local cid = get(ctx, x + dx, yy, z + dz)
-					if is_air(ctx, cid) or cid == c.water then
+					if is_air(ctx, cid) or cid == c.oil then
 						put(ctx, x + dx, yy, z + dz, c.starchstone)
 					end
 				end
@@ -340,7 +343,7 @@ function st.shrine(ctx, x, y, z)
 	for dz = -3, 3 do
 		for dx = -3, 3 do
 			local cid = get(ctx, x + dx, y - 2, z + dz)
-			if is_air(ctx, cid) or cid == c.water then
+			if is_air(ctx, cid) or cid == c.oil then
 				put(ctx, x + dx, y - 2, z + dz, c.starchstone)
 			end
 			put(ctx, x + dx, y - 1, z + dz, c.starchstone)
@@ -384,7 +387,7 @@ function st.arena(ctx, site)
 				local px, pz = x + dx, z + dz
 				for yy = y - 2, y - st.ARENA_BELOW, -1 do
 					local cid = get(ctx, px, yy, pz)
-					if is_air(ctx, cid) or cid == c.water then
+					if is_air(ctx, cid) or cid == c.oil then
 						put(ctx, px, yy, pz, c.starchstone)
 					else
 						break
@@ -449,7 +452,7 @@ end
 
 -- Champs ---------------------------------------------------------------------------
 
--- Potager abandonné : terre labourée humide, rigole d'eau au milieu, plants de patates.
+-- Potager abandonné : terre labourée humide, rigole d'huile au milieu, plants de patates.
 function st.farm_plot(ctx, x, y, z)
 	local pr, c = ctx.pr, ctx.c
 	local w, d = pr:next(5, 8), pr:next(4, 6)
@@ -467,7 +470,7 @@ function st.farm_plot(ctx, x, y, z)
 			if border then
 				put(ctx, x + dx, y - 1, z + dz, c.tuber_planks)
 			elseif dz == mid then
-				put(ctx, x + dx, y - 1, z + dz, c.water)
+				put(ctx, x + dx, y - 1, z + dz, c.oil)
 			else
 				put(ctx, x + dx, y - 1, z + dz, c.farmland_wet)
 			end
@@ -735,7 +738,7 @@ function st.peel_cactus(ctx, x, y, z)
 	return true
 end
 
--- Puits calciné : margelle de briques calcinées, eau, toit sur quatre pédicelles.
+-- Puits calciné : margelle de briques calcinées, huile, toit sur quatre pédicelles.
 function st.hash_well(ctx, x, y, z)
 	local pr, c = ctx.pr, ctx.c
 	if not fits(ctx, x - 2, y - 4, z - 2, x + 2, y + 4, z + 2) then
@@ -750,10 +753,10 @@ function st.hash_well(ctx, x, y, z)
 			put(ctx, x + dx, y - 1, z + dz, c.charred_brick)
 			put(ctx, x + dx, y - 4, z + dz, c.starchstone)
 			for yy = y - 3, y - 2 do
-				put(ctx, x + dx, yy, z + dz, rim and c.starchstone or c.water)
+				put(ctx, x + dx, yy, z + dz, rim and c.starchstone or c.oil)
 			end
 			if not rim then
-				put(ctx, x + dx, y - 1, z + dz, c.water)
+				put(ctx, x + dx, y - 1, z + dz, c.oil)
 			end
 			for h = 0, 3 do
 				put(ctx, x + dx, y + h, z + dz, c.air)
